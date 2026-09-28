@@ -9,12 +9,31 @@ HERE = os.path.abspath(SPECPATH)
 
 ffmpeg_bin = imageio_ffmpeg.get_ffmpeg_exe()
 
+# Bundle the in-app browser engine (pywebview + WebView2 loader) when installed.
+# Guarded so the build still works without it (browser feature degrades gracefully).
+browser_datas: list = []
+browser_binaries: list = []
+browser_hidden: list = []
+try:
+    from PyInstaller.utils.hooks import collect_all
+
+    for _pkg in ("webview", "clr_loader", "pythonnet"):
+        try:
+            _d, _b, _h = collect_all(_pkg)
+        except Exception:  # noqa: BLE001 — package not installed
+            continue
+        browser_datas += _d
+        browser_binaries += _b
+        browser_hidden += _h
+except ImportError:
+    pass
+
 a = Analysis(
     ["main.py"],
     pathex=[HERE],
-    binaries=[(ffmpeg_bin, ".")],
-    datas=[(os.path.join(HERE, "assets", "icon.ico"), "assets")],
-    hiddenimports=[],
+    binaries=[(ffmpeg_bin, ".")] + browser_binaries,
+    datas=[(os.path.join(HERE, "assets", "icon.ico"), "assets")] + browser_datas,
+    hiddenimports=browser_hidden,
     hookspath=[],
     runtime_hooks=[],
     excludes=["matplotlib", "numpy", "pandas", "pytest"],

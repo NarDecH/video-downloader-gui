@@ -43,3 +43,8 @@ Thumbs.db
 .cache/
 temp/
 tmp/
+
+# --- Local test artifacts (เซฟไว้ทดสอบเฉพาะเครื่อง ไม่นำขึ้น repo) ---
+/test.html
+/test_files/
+.freebuff/

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<title>หน้าทดสอบรูปแบบเว็บยุคใหม่ (offline fixture)</title>
+<meta property="og:video:secure_url" content="https://cdn.example.com/meta/secure.mp4">
+<meta name="twitter:player:stream" content="https://cdn.example.com/meta/twitter.mp4">
+</head>
+<body>
+<h1>จำลองหน้าเว็บ WordPress ที่ฝัง player ภายนอก + lazy-load</h1>
+
+<!-- lazy-load ผ่าน data-* attribute (สื่อไม่ได้อยู่ที่ src) -->
+<div class="wp-video" data-src="https://cdn.example.com/lazy/div.mp4"></div>
+<video controls poster="poster.jpg" src="blob:https://site.example/9f8e-uuid">
+  <source data-video-src="https://cdn.example.com/lazy/source.mp4" type="video/mp4">
+</video>
+
+<!-- iframe player ภายนอกแบบ lazy-load (src และ data-src ซ้ำกันหลัง lazyload ทำงาน) -->
+<iframe class="lazyloaded" data-src="https://player.example.com/e/abc123/player.html"
+        src="https://player.example.com/e/abc123/player.html" allowfullscreen></iframe>
+<!-- iframe ที่ไม่ใช่ player (ต้องถูกข้ามเพราะไม่มีสื่อ) -->
+<iframe src="https://widgets.example.com/banner?slot=1"></iframe>
+
+<script>
+// สื่อที่ฝังใน JSON/สคริปต์ — รวมแบบ escape ของ JSON และ \u0026
+var playerCfg = {"file":"https:\/\/cdn.example.com\/json\/escaped.mp4?tok=1\u0026sig=2"};
+var hlsSrc = 'https://cdn.example.com/hls/index.m3u8';
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"VideoObject","contentUrl":"https://cdn.example.com/jsonld/video.webm"}
+</script>
+</body>
+</html>
