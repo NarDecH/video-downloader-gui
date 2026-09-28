@@ -27,11 +27,13 @@ jobs:
         run: python -m PyInstaller --clean --noconfirm VideoDownloaderGUI.spec
 
       - name: Generate checksums
+        id: hash
         shell: pwsh
         run: |
           $hash = (Get-FileHash dist/VideoDownloaderGUI.exe -Algorithm SHA256).Hash.ToLower()
           "$hash  VideoDownloaderGUI.exe" | Out-File -Encoding ascii dist/checksums.txt
           Get-Content dist/checksums.txt
+          "sha256=$hash" >> $env:GITHUB_OUTPUT
 
       - name: Rename exe with version
         shell: pwsh
@@ -51,11 +53,17 @@ jobs:
             - **VideoDownloaderGUI-${{ github.ref_name }}.exe** — ไฟล์เดียวจบ ไม่ต้องติดตั้ง Python (รวม ffmpeg แล้ว)
 
             ## ตรวจสอบไฟล์ (SHA256)
-            ค่า checksum อยู่ในไฟล์ `checksums.txt` หรือตรวจเองด้วย:
+
+            ```
+            ${{ steps.hash.outputs.sha256 }}  VideoDownloaderGUI-${{ github.ref_name }}.exe
+            ```
+
+            ตรวจเองได้ด้วย:
             ```powershell
             Get-FileHash .\VideoDownloaderGUI-${{ github.ref_name }}.exe -Algorithm SHA256
             ```
 
             > 💡 ถ้า SmartScreen เตือน กด **More info → Run anyway**
+            > 📄 เอกสารทั้งหมด: https://nardech.github.io/video-downloader-gui/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
