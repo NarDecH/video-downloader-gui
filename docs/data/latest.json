@@ -9,8 +9,10 @@
     "downloads": 0
   },
   "apk": {
-    "name": "VideoDownloaderGUI-android-v1.2.0.apk",
-    "url": "https://github.com/NarDecH/video-downloader-gui/releases/download/v1.2.0/VideoDownloaderGUI-android-v1.2.0.apk",
-    "sha256": "ca9386a9129cd70e896a71000e135cdd8f6ab9307fba0caf93cfdc55e16d3b99"
+    "name": "VideoDownloaderGUI-android-v1.3.0.apk",
+    "url": "https://github.com/NarDecH/video-downloader-gui/releases/download/v1.3.0/VideoDownloaderGUI-android-v1.3.0.apk",
+    "sha256": "490bd003dd066188907cdd5a7a2294a08dabf912b2b6ae2252ce858c27006ec6",
+    "size": 156100163,
+    "downloads": 0
   }
 }
