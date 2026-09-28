@@ -21,8 +21,9 @@
 
 ```
 .
-├── main.py                    # แอป GUI หลัก (tkinter + yt-dlp + โหมดสำรอง)
+├── main.py                    # แอป GUI หลัก (tkinter + yt-dlp + fallback + i18n + config)
 ├── html_media.py              # โหมดสำรอง: แยกสื่อจาก HTML / ไฟล์ .html ในเครื่อง / ลิงก์ตรง (สตรีมพร้อม progress)
+├── scripts/bump.py            # bump เวอร์ชันทุกจุดจากคำสั่งเดียว: python scripts/bump.py X.Y.Z
 ├── tests/
 │   ├── test.html              # หน้าทดสอบ (วิดีโอตัวอย่างสาธารณะ CC จาก test-videos.co.uk) 4 รูปแบบการฝัง
 │   └── run_tests.py           # ชุดทดสอบอัตโนมัติ (รัน: python tests/run_tests.py)
@@ -84,12 +85,17 @@ python -m py_compile main.py html_media.py
 
 ## 5. การ release
 
-1. แก้เวอร์ชัน (ดูข้อ 4) และเพิ่มรายการใน `docs/CHANGELOG.md`
+1. `python scripts/bump.py X.Y.Z` (อัปเดต main.py, version_info.txt, build.gradle.kts, CHANGELOG อัตโนมัติ) และเพิ่มรายการใน `docs/CHANGELOG.md`
 2. `git tag vX.Y.Z && git push origin vX.Y.Z`
-3. GitHub Actions (release.yml) จะ build EXE, คำนวณ SHA256 และสร้าง release พร้อมไฟล์แนบโดยอัตโนมัติ
-4. หน้าเว็บ Pages จะดึง release ใหม่จาก API ภายในไม่กี่นาที (แสดงเวอร์ชัน ขนาดไฟล์ วันที่ และ checksum)
+3. GitHub Actions จะ build ทั้ง EXE (release.yml) และ APK แบบ signed (android.yml) พร้อม SHA256, artifact attestation และเขียน `docs/data/latest.json` กลับเข้า repo อัตโนมัติ
+4. หน้าเว็บ Pages อ่าน `latest.json` แบบ same-origin (ไม่มี rate limit) — อัปเดตภายในไม่กี่นาที
 
-## 6. ข้อจำกัดที่ควรรู้
+## 6. การตั้งค่าผู้ใช้ (เดสก์ท็อป)
+
+- บันทึกที่ `%APPDATA%/video-downloader/config.json` — โหลด/เซฟผ่าน `load_config()`/`save_config()` ใน main.py
+- ค่า id ของคุณภาพ/ความเร็ว เป็นภาษากลาง (best/1080/720/480/mp3, unlimited/1m/5m/10m) — label แปลผ่าน `LANG` dict ตอนแสดงผล; ค่า legacy ภาษาไทยจะถูก migrate อัตโนมัติ
+
+## 7. ข้อจำกัดที่ควรรู้
 
 - EXE ขนาด ~80 MB เพราะ bundle Python + yt-dlp + ffmpeg (onefile จะแตกไฟล์ชั่วคราวตอนเปิด อาจช้า 2–5 วินาทีแรก)
 - yt-dlp เป็นแพ็กเกจที่ต้องอัปเดตบ่อยเมื่อเว็บไซต์เปลี่ยน — ถ้าดาวน์โหลดไม่ได้ ให้ลอง `pip install -U yt-dlp` หรือ build ใหม่

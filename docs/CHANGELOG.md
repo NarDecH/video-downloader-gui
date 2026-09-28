@@ -2,12 +2,33 @@
 
 รูปแบบอ้างอิง [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) และใช้ [Semantic Versioning](https://semver.org/)
 
-## [Unreleased]
+## [1.2.0] — 2026-09-28
 
 ### Added (เพิ่มใหม่)
+- **เดสก์ท็อป: จำค่าการตั้งค่า** — โฟลเดอร์/คุณภาพ/ความเร็ว/ภาษา/ขนาดหน้าต่าง ถูกบันทึกอัตโนมัติลง `%APPDATA%/video-downloader/config.json` (พร้อม migration ค่าเก่า)
+- **เดสก์ท็อป: แถบความคืบหน้าต่อรายการ** — แถบตัวอักษร ▓ ในตารางแยกต่อแถว ไม่ต้องเดาจากแถบรวม
+- **เดสก์ท็อป: รองรับคุกกี้เบราว์เซอร์** (Chrome/Firefox/Edge/Brave/ฯลฯ) สำหรับคอนเทนต์ที่ต้องล็อกอิน และตัวเลือก **โหลดทั้งเพลย์ลิสต์**
+- **เดสก์ท็อป: เช็คอัปเดตอัตโนมัติ** — ตรวจ release ใหม่ตอนเปิดโปรแกรม แสดงแบนเนอร์คลิกไปดาวน์โหลด (มีเมนูตรวจเองด้วย)
+- **เดสก์ท็อป: สลับภาษาไทย/อังกฤษ** จากเมนู — ครบทุก label รวมตัวเลือกคุณภาพ
+- **Android: เลือกบริการอัตโนมัติ** — YouTube / SoundCloud / Bandcamp ตามโดเมนลิงก์ พร้อมตัวเลือก **เสียงเท่านั้น** (kbps)
+- **Android: R8 minify + shrinkResources** — APK ลดจาก 5.9 MB → ~2.2 MB
+- **Android: ภาษาอังกฤษ** (values-en) ตามภาษาระบบ
+- **CI: workflow Tests** — รันชุดทดสอบ + ruff ทุก push/PR ก่อนขึ้น release
+- **เว็บ: `docs/data/latest.json`** — release workflow เขียนข้อมูลไฟล์+checksum กลับเข้า repo หน้าเว็บอ่านแบบ same-origin ไม่ติด GitHub API rate limit อีก
+- **หลักฐานที่มาไฟล์ (build provenance)** — ทั้ง EXE และ APK generate artifact attestation ผ่าน GitHub (`gh attestation verify`)
+- **สคริปต์ `scripts/bump.py`** — เปลี่ยนเวอร์ชันทุกจุด (main.py / version_info / build.gradle / CHANGELOG) จากคำสั่งเดียว
+
+### Changed (เปลี่ยนแปลง)
+- Release body ฝั่ง Android แนบ SHA256 ของ APK ใน release notes ให้หน้าเว็บแสดงได้
+
+## [1.1.0] — 2026-09-28
+
+### Added (เพิ่มใหม่)
+- **แอป Android** (Kotlin + NewPipeExtractor) — APK ติดตั้งได้ รับลิงก์แชร์ เลือกคุณภาพ ดาวน์โหลดลง Downloads พร้อม notification และ progress
 - **โหมดสำรอง (fallback download)** — เมื่อ yt-dlp ดึงวีดีโอไม่สำเร็จ แอปจะสลับไปแยกลิงก์สื่อจากหน้า HTML โดยอัตโนมัติ: รองรับไฟล์ `.html` ในเครื่อง (คัดลอกสื่อในเครื่องหรือดาวน์โหลดสื่อระยะไกลที่อ้างถึง), ลิงก์ไฟล์สื่อตรง (mp4/mp3/ฯลฯ) และการดึงหน้าเว็บเพื่อหา `<video>/<source>/<a>/og:video` — สตรีมดาวน์โหลดพร้อม progress และปุ่มยกเลิกใช้งานได้เหมือนเดิม
 - โมดูล `html_media.py` + หน้าทดสอบ `tests/test.html` (วิดีโอตัวอย่างสาธารณะ CC) และชุดทดสอบอัตโนมัติ `tests/run_tests.py` (16 เคส ผ่านทั้งหมด)
 - สถานะใหม่ในตาราง: "ลองโหมดสำรอง…" และ "สำเร็จ (สำรอง) ✓"
+- CI build signed APK บน tag `v*` + หน้าเว็บแสดงปุ่มดาวน์โหลด Android
 
 ## [1.0.0] — 2026-09-28
 

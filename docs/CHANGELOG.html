@@ -48,9 +48,20 @@ footer{text-align:center;color:var(--muted);font-size:.85rem;margin-top:40px}
 <div class="timeline">
 
 <div class="release">
-  <h2>Unreleased <span class="tag" style="background:#fef9c3;color:#854d0e;border-color:#fde047">กำลังพัฒนา</span></h2>
+  <h2>เวอร์ชัน 1.2.0 <span class="tag">v1.2.0</span> <span class="date">— 28 กันยายน 2026</span></h2>
   <h3 class="added">✨ Added — ฟีเจอร์ใหม่</h3>
   <ul>
+    <li><b>เดสก์ท็อป:</b> จำค่าการตั้งค่าทั้งหมด (โฟลเดอร์/คุณภาพ/ภาษา/ขนาดหน้าต่าง) + แถบความคืบหน้าต่อรายการในตาราง + คุกกี้เบราว์เซอร์ &amp; โหลดเพลย์ลิสต์ + เช็คอัปเดตอัตโนมัติ + สลับภาษาไทย/อังกฤษ</li>
+    <li><b>Android:</b> เลือกบริการอัตโนมัติ (YouTube/SoundCloud/Bandcamp) + ตัวเลือกเสียงเท่านั้น + R8 (APK 5.9→2.2 MB) + ภาษาอังกฤษ</li>
+    <li><b>CI:</b> รันเทสต์+ruff ทุก push • หน้าเว็บอ่าน <code>latest.json</code> same-origin ไม่ติด rate limit • build provenance attestation ทั้ง EXE/APK • <code>scripts/bump.py</code></li>
+  </ul>
+</div>
+
+<div class="release">
+  <h2>เวอร์ชัน 1.1.0 <span class="tag">v1.1.0</span> <span class="date">— 28 กันยายน 2026</span></h2>
+  <h3 class="added">✨ Added — ฟีเจอร์ใหม่</h3>
+  <ul>
+    <li><b>แอป Android</b> (Kotlin + NewPipeExtractor) — APK ติดตั้งได้ รับลิงก์แชร์ เลือกคุณภาพ ดาวน์โหลดลง Downloads พร้อม notification</li>
     <li><b>โหมดสำรอง (fallback download)</b> — เมื่อ yt-dlp ดึงไม่สำเร็จ แอปสลับไปแยกลิงก์สื่อจากหน้า HTML อัตโนมัติ: รองรับไฟล์ <code>.html</code> ในเครื่อง, ลิงก์ไฟล์สื่อตรง (mp4/mp3/ฯลฯ) และการดึงหน้าเว็บหา <code>&lt;video&gt;/&lt;source&gt;/&lt;a&gt;/og:video</code> — พร้อม progress และปุ่มยกเลิก</li>
     <li>โมดูล <code>html_media.py</code> + หน้าทดสอบ <code>tests/test.html</code> (วิดีโอตัวอย่างสาธารณะ CC) + ชุดทดสอบ <code>tests/run_tests.py</code> — <b>16 เคส ผ่านทั้งหมด</b></li>
     <li>สถานะใหม่ในตาราง: "ลองโหมดสำรอง…" และ "สำเร็จ (สำรอง) ✓"</li>

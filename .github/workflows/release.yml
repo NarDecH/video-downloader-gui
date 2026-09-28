@@ -41,6 +41,12 @@ jobs:
           $tag = "${{ github.ref_name }}"
           Copy-Item dist/VideoDownloaderGUI.exe "dist/VideoDownloaderGUI-$tag.exe"
 
+      - name: Attest build artifacts (provenance)
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-path: |
+            dist/VideoDownloaderGUI-*.exe
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:

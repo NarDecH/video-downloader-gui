@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvStatus: TextView
 
     private var streamInfo: StreamInfo? = null
-    private var videoStreams: List<VideoStream> = emptyList()
+    private var streamChoices: List<Pair<org.schabi.newpipe.extractor.stream.Stream, String>> = emptyList()
     private var currentDownloadId: Long = -1
 
     private val downloaderImpl = object : Downloader() {
@@ -135,22 +135,36 @@ class MainActivity : AppCompatActivity() {
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val info = StreamInfo.getInfo(ServiceList.YouTube, url)
+                // เลือก service ตามโดเมนของลิงก์อัตโนมัติ
+                val service = when {
+                    url.contains("soundcloud.com", true) -> ServiceList.SoundCloud
+                    url.contains("bandcamp.com", true) -> ServiceList.Bandcamp
+                    else -> ServiceList.YouTube
+                }
+                val info = StreamInfo.getInfo(service, url)
                 streamInfo = info
-                val streams = info.videoStreams.filter { it.url != null && !it.isVideoOnly }
+                val video = info.videoStreams.filter { it.url != null && !it.isVideoOnly }
                     .sortedByDescending { it.height }
-                videoStreams = streams
+                val audio = info.audioStreams.filter { it.url != null }
+                    .sortedByDescending { it.averageBitrate }
+                    .take(2)
+                // คู่ (สตรีม, ป้ายกำกับ) — เสียงต่อท้ายเป็นตัวเลือก "เสียงเท่านั้น"
+                val choices: List<Pair<org.schabi.newpipe.extractor.stream.Stream, String>> =
+                    video.map { s ->
+                        val fps = if (s.fps > 45) "${s.fps}fps" else ""
+                        s to "${s.resolution} ${s.format?.name ?: ""} $fps".trim()
+                    } + audio.map { a ->
+                        a to "AUDIO ${a.averageBitrate}kbps ${a.format?.name ?: ""}".trim()
+                    }
+                streamChoices = choices
                 withContext(Dispatchers.Main) {
                     tvTitle.text = info.name
-                    tvMeta.text = "${info.uploaderName} • ${info.duration / 60} นาที • รองรับ ${streams.size} คุณภาพ"
+                    tvMeta.text = "${info.uploaderName} • ${info.duration / 60} นาที • รองรับ ${choices.size} คุณภาพ"
                     cardInfo.visibility = View.VISIBLE
-                    if (streams.isNotEmpty()) {
-                        val labels = streams.map { s ->
-                            val fps = if (s.fps > 45) "${s.fps}fps" else ""
-                            "${s.resolution} ${s.format?.name ?: ""} $fps".trim()
-                        }
+                    if (choices.isNotEmpty()) {
                         spQuality.adapter = ArrayAdapter(
-                            this@MainActivity, android.R.layout.simple_spinner_dropdown_item, labels
+                            this@MainActivity, android.R.layout.simple_spinner_dropdown_item,
+                            choices.map { it.second }
                         )
                         spQuality.visibility = View.VISIBLE
                         btnDownload.visibility = View.VISIBLE
@@ -171,7 +185,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startDownload() {
-        val stream = videoStreams.getOrNull(spQuality.selectedItemPosition) ?: return
+        val stream = streamChoices.getOrNull(spQuality.selectedItemPosition)?.first ?: return
         val info = streamInfo ?: return
         btnDownload.isEnabled = false
 

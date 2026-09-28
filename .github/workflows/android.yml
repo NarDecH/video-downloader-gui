@@ -50,12 +50,56 @@ jobs:
           sha256sum "VideoDownloaderGUI-android-$TAG.apk" > android-checksums.txt
           cat android-checksums.txt
 
+      - name: Attest build artifacts (provenance)
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-path: |
+            VideoDownloaderGUI-android-*.apk
+
       - name: Upload to GitHub Release
+        id: rel
         uses: softprops/action-gh-release@v2
         with:
           files: |
             VideoDownloaderGUI-android-*.apk
             android-checksums.txt
           generate_release_notes: true
+          append_body: true
+          body: |
+            ## Android (SHA256)
+
+            ```
+            $(cat android-checksums.txt | sed "s|VideoDownloaderGUI-android-v\([0-9.]*\)\.apk|VideoDownloaderGUI-android-${{ github.ref_name }}.apk|")
+            ```
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Write latest.json for Pages (same-origin, no API rate limit)
+        run: |
+          TAG="${{ github.ref_name }}"
+          APK_SHA=$(cut -d' ' -f1 android-checksums.txt)
+          mkdir -p docs/data
+          python3 - <<PYEOF
+          import json, os, pathlib
+          tag = "$TAG"
+          apk_sha = "$APK_SHA"
+          path = pathlib.Path("docs/data/latest.json")
+          data = {}
+          if path.exists():
+              data = json.loads(path.read_text(encoding="utf-8"))
+          data["tag"] = tag
+          data["published_at"] = "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          data["apk"] = {"name": f"VideoDownloaderGUI-android-{tag}.apk",
+                         "url": f"https://github.com/NarDecH/video-downloader-gui/releases/download/{tag}/VideoDownloaderGUI-android-{tag}.apk",
+                         "sha256": apk_sha}
+          path.parent.mkdir(parents=True, exist_ok=True)
+          path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+          PYEOF
+
+      - name: Commit latest.json back
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data/latest.json
+          git diff --cached --quiet || git commit -m "chore: update latest.json for ${{ github.ref_name }} [skip ci]"
+          git push

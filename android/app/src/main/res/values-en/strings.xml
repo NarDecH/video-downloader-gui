@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Video Downloader</string>
+    <string name="hint_url">Paste a video link here (YouTube, SoundCloud…)</string>
+    <string name="btn_fetch">Fetch info</string>
+    <string name="btn_download">Download</string>
+    <string name="title_activity">Video Downloader GUI</string>
+    <string name="legal_note">Download only public content you are allowed to save under the law and each website\'s terms.</string>
+    <string name="fetching">Fetching info…</string>
+    <string name="downloading">Downloading…</string>
+    <string name="done">Done ✓ Saved to Downloads/</string>
+    <string name="error_generic">Error: %1$s</string>
+    <string name="notif_channel">Downloads</string>
+</resources>

@@ -209,22 +209,41 @@ function showError(msg) {
 }
 async function init() {
   let rel = null;
+  // 1) ลองไฟล์ latest.json แบบ same-origin ก่อน (ไม่มี rate limit)
   try {
-    const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
-    if (cached && Date.now() - cached.t < CACHE_TTL) rel = cached.v;
+    const r = await fetch("data/latest.json", { cache: "no-cache" });
+    if (r.ok) {
+      const d = await r.json();
+      rel = {
+        tag_name: d.tag,
+        published_at: d.published_at,
+        body: `SHA256\n\n\`\`\`\n${(d.exe && d.exe.sha256 ? d.exe.sha256 + "  " + d.exe.name : "")}\n${(d.apk && d.apk.sha256 ? d.apk.sha256 + "  " + d.apk.name : "")}\n\`\`\``,
+        assets: [d.exe, d.apk].filter(Boolean).map(a => ({
+          name: a.name, size: a.size || 0, download_count: a.downloads || 0,
+          browser_download_url: a.url,
+        })),
+      };
+    }
   } catch {}
+  // 2) fallback: GitHub API + cache ใน localStorage
   if (!rel) {
-    const res = await fetch(API, { headers: { Accept: "application/vnd.github+json" } });
-    if (res.status === 403) {
-      showError('API rate limit หมดชั่วคราว — ดาวน์โหลดได้ที่ <a href="https://github.com/NarDecH/video-downloader-gui/releases/latest">GitHub Releases</a> โดยตรง');
-      return;
+    try {
+      const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
+      if (cached && Date.now() - cached.t < CACHE_TTL) rel = cached.v;
+    } catch {}
+    if (!rel) {
+      const res = await fetch(API, { headers: { Accept: "application/vnd.github+json" } });
+      if (res.status === 403) {
+        showError('API rate limit หมดชั่วคราว — ดาวน์โหลดได้ที่ <a href="https://github.com/NarDecH/video-downloader-gui/releases/latest">GitHub Releases</a> โดยตรง');
+        return;
+      }
+      if (!res.ok) {
+        showError('โหลดข้อมูล release ไม่สำเร็จ — <a href="https://github.com/NarDecH/video-downloader-gui/releases/latest">ไปที่ GitHub Releases</a>');
+        return;
+      }
+      rel = await res.json();
+      try { localStorage.setItem(CACHE_KEY, JSON.stringify({ t: Date.now(), v: rel })); } catch {}
     }
-    if (!res.ok) {
-      showError('โหลดข้อมูล release ไม่สำเร็จ — <a href="https://github.com/NarDecH/video-downloader-gui/releases/latest">ไปที่ GitHub Releases</a>');
-      return;
-    }
-    rel = await res.json();
-    try { localStorage.setItem(CACHE_KEY, JSON.stringify({ t: Date.now(), v: rel })); } catch {}
   }
   render(rel);
 }

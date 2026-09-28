@@ -4,3 +4,4 @@
 -keep class org.schabi.newpipe.extractor.** { *; }
 -dontwarn org.mozilla.javascript.**
 -dontwarn org.mozilla.classfile.**
+-dontwarn org.jspecify.annotations.NullMarked
