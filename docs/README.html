@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Video Downloader GUI — README</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f8fafc; --card:#ffffff; --ink:#1e293b; --muted:#64748b;
+  --brand:#5e76d3; --brand2:#e7301a; --accent:#4f46e5;
+  --border:#e2e8f0; --ok:#16a34a; --warn:#b45309;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Prompt',sans-serif;background:var(--bg);color:var(--ink);line-height:1.75}
+.wrap{max-width:980px;margin:0 auto;padding:0 24px 80px}
+.hero{background:linear-gradient(135deg,#5e76d3 0%,#e7301a 100%);padding:56px 24px 48px;color:#fff;text-align:center}
+.hero img{max-width:100%;border-radius:16px;box-shadow:0 20px 40px rgba(0,0,0,.25);margin-bottom:28px}
+.hero h1{font-size:2.4rem;font-weight:700;margin-bottom:10px}
+.hero p{opacity:.92;font-weight:300;font-size:1.1rem;max-width:640px;margin:0 auto}
+.badges{margin-top:20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.badge{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);padding:4px 14px;border-radius:999px;font-size:.85rem;backdrop-filter:blur(4px)}
+nav.docnav{display:flex;gap:10px;justify-content:center;margin:24px 0 8px;flex-wrap:wrap}
+nav.docnav a{color:#fff;background:rgba(255,255,255,.15);padding:6px 16px;border-radius:8px;text-decoration:none;font-size:.9rem;border:1px solid rgba(255,255,255,.3)}
+nav.docnav a:hover{background:rgba(255,255,255,.3)}
+h2{font-size:1.5rem;margin:48px 0 16px;display:flex;align-items:center;gap:10px}
+h2::before{content:"";width:6px;height:28px;border-radius:3px;background:linear-gradient(var(--brand),var(--brand2))}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px 28px;margin:16px 0;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+ul.feat{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+ul.feat li{background:#f1f5f9;border-radius:10px;padding:10px 14px;font-size:.95rem}
+@media(max-width:640px){ul.feat{grid-template-columns:1fr}}
+figure{text-align:center;margin:20px 0}
+figure img{max-width:100%;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.12)}
+figcaption{color:var(--muted);font-size:.85rem;margin-top:10px}
+ol.steps{counter-reset:step;list-style:none;margin-top:12px}
+ol.steps li{position:relative;padding:14px 18px 14px 58px;background:#f8fafc;border:1px solid var(--border);border-radius:12px;margin-bottom:10px}
+ol.steps li::before{counter-increment:step;content:counter(step);position:absolute;left:14px;top:14px;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600}
+pre{background:#0f172a;color:#e2e8f0;border-radius:12px;padding:16px 20px;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.85rem;margin:12px 0}
+code{font-family:'JetBrains Mono',monospace;font-size:.9em;background:#eef2ff;color:#3730a3;padding:2px 7px;border-radius:6px}
+pre code{background:none;color:inherit;padding:0}
+.note{border-left:4px solid var(--brand);background:#eef2ff;padding:12px 18px;border-radius:0 10px 10px 0;margin:14px 0;font-size:.95rem}
+.note.warn{border-color:#f59e0b;background:#fffbeb}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.95rem;background:var(--card);border-radius:12px;overflow:hidden}
+th{background:#f1f5f9;text-align:left;padding:12px 16px;font-weight:600}
+td{padding:12px 16px;border-top:1px solid var(--border)}
+tr:hover td{background:#f8fafc}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.doclinks{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px}
+@media(max-width:640px){.doclinks{grid-template-columns:1fr}}
+.doclinks a{display:block;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center;font-weight:500;transition:.2s}
+.doclinks a:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.08);text-decoration:none}
+footer{text-align:center;color:var(--muted);font-size:.85rem;margin-top:56px}
+</style>
+</head>
+<body>
+<header class="hero">
+  <img src="img/banner.png" alt="Video Downloader GUI banner">
+  <h1>Video Downloader GUI</h1>
+  <p>แอป GUI บน Windows สำหรับดาวน์โหลดวีดีโอจากเว็บไซต์สาธารณะ (YouTube, TikTok, Facebook, X/Twitter, Vimeo ฯลฯ) ด้วยเอนจิน yt-dlp — ไฟล์เดียวจบ ไม่ต้องติดตั้ง Python</p>
+  <div class="badges">
+    <span class="badge">🏷️ Release 1.0.0</span>
+    <span class="badge">📜 MIT License</span>
+    <span class="badge">🪟 Windows 10/11</span>
+  </div>
+  <nav class="docnav">
+    <a href="README.html">📖 README</a>
+    <a href="RESEARCH.html">🔬 Research</a>
+    <a href="CHANGELOG.html">🗓️ Changelog</a>
+    <a href="index.html">⬇️ ดาวน์โหลด</a>
+  </nav>
+</header>
+
+<div class="wrap">
+
+<h2>✨ ฟีเจอร์</h2>
+<div class="card">
+  <ul class="feat">
+    <li>🖥️ <b>ใช้งานง่าย</b> — วางลิงก์ (หลายลิงก์พร้อมกัน) เลือกคุณภาพ กดปุ่มเดียวจบ</li>
+    <li>🎚️ <b>เลือกคุณภาพได้</b> — ดีที่สุด / 1080p / 720p / 480p / แยกเสียง MP3</li>
+    <li>📊 <b>แสดงความคืบหน้า</b> — เปอร์เซ็นต์ ความเร็ว เวลาที่เหลือแบบเรียลไทม์</li>
+    <li>⏹️ <b>ยกเลิกได้ทุกเมื่อ</b> — หยุดงานกลางคันอย่างปลอดภัย</li>
+    <li>🚫 <b>จำกัดความเร็ว</b> — 1 / 5 / 10 MB/s กันกินแบนด์วิดท์ทั้งเน็ต</li>
+    <li>📦 <b>ไฟล์เดียวจบ</b> — แถม ffmpeg มาในไฟล์ ไม่ต้องติดตั้งอะไรเพิ่ม</li>
+  </ul>
+</div>
+
+<h2>🖼️ หน้าตาโปรแกรม</h2>
+<figure>
+  <img src="img/screenshot.png" alt="ภาพหน้าจอโปรแกรม Video Downloader GUI">
+  <figcaption>หน้าจอหลัก: วางลิงก์หลายรายการ เลือกคุณภาพ/โฟลเดอร์ และติดตามคิวดาวน์โหลดแบบเรียลไทม์</figcaption>
+</figure>
+
+<h2>🚀 เริ่มใช้งาน (ผู้ใช้ทั่วไป)</h2>
+<div class="card">
+  <ol class="steps">
+    <li>ไปที่ <a href="index.html">หน้าเว็บดาวน์โหลด</a> หรือ <a href="https://github.com/NarDecH/video-downloader-gui/releases/latest">GitHub Releases</a></li>
+    <li>กดดาวน์โหลด <code>VideoDownloaderGUI.exe</code></li>
+    <li>(แนะนำ) ตรวจ SHA256 ของไฟล์กับค่าที่แสดงบนหน้าเว็บ — ดูคำสั่งด้านล่าง</li>
+    <li>ดับเบิลคลิกเปิดโปรแกรม วางลิงก์ เลือกโฟลเดอร์ กด <b>เริ่มดาวน์โหลด</b></li>
+  </ol>
+  <pre><code># ตรวจ checksum บน PowerShell
+Get-FileHash .\VideoDownloaderGUI.exe -Algorithm SHA256</code></pre>
+  <div class="note warn">⚠️ ถ้า Windows SmartScreen เตือน ให้กด <b>More info → Run anyway</b> (เกิดจากไฟล์ยังไม่มี code signing certificate)</div>
+  <div class="note">💡 เปิดครั้งแรกอาจช้า 2–5 วินาที เพราะโหมด onefile แตกไฟล์ชั่วคราว — ครั้งต่อไปจะเร็วขึ้น</div>
+</div>
+
+<h2>🛠️ สำหรับนักพัฒนา</h2>
+<div class="card">
+<pre><code>git clone https://github.com/NarDecH/video-downloader-gui.git
+cd video-downloader-gui
+python -m pip install -r requirements.txt
+
+python main.py                                                # รันจากซอร์ส
+python -m PyInstaller --clean --noconfirm VideoDownloaderGUI.spec  # แพ็ก EXE</code></pre>
+  <p>ต้องการ Python 3.13+ (ทดสอบบน 3.14) — รายละเอียดสถาปัตยกรรมอยู่ใน <a href="RESEARCH.html">Research</a> และคู่มือ contributor ที่ <a href="https://github.com/NarDecH/video-downloader-gui/blob/main/AGENT.md">AGENT.md</a></p>
+</div>
+
+<h2>📚 เอกสารทั้งหมด</h2>
+<div class="doclinks">
+  <a href="README.html">📖 README<br><small>ภาพรวมและวิธีใช้</small></a>
+  <a href="RESEARCH.html">🔬 Research<br><small>เหตุผลทางเทคนิค</small></a>
+  <a href="CHANGELOG.html">🗓️ Changelog<br><small>ประวัติเวอร์ชัน</small></a>
+</div>
+
+<h2>⚖️ การใช้งานอย่างรับผิดชอบ</h2>
+<div class="card">
+  <p>โปรแกรมนี้เป็นเครื่องมือทั่วไปสำหรับคอนเทนต์<b>สาธารณะ</b>เท่านั้น โปรด:</p>
+  <ul style="margin:10px 0 10px 22px">
+    <li>ดาวน์โหลดเฉพาะเนื้อหาที่คุณมีสิทธิ์ หรืออยู่ภายใต้ข้อยกเว้นการใช้งานโดยชอบของกฎหมายท้องถิ่น</li>
+    <li>เคารพข้อกำหนดการใช้งานของแต่ละแพลตฟอร์ม</li>
+    <li><b>ไม่</b>ใช้เพื่อละเมิดลิขสิทธิ์ หรือเผยแพร่คอนเทนต์ส่วนบุคคลที่เจ้าของไม่ได้ยินยอม</li>
+  </ul>
+  <p>ผู้ใช้งานรับผิดชอบการใช้งานของตนเอง ซอฟต์แวร์เผยแพร่ภายใต้สัญญาอนุญาต <a href="https://github.com/NarDecH/video-downloader-gui/blob/main/LICENSE">MIT</a></p>
+</div>
+
+<h2>🙏 เครดิต</h2>
+<div class="card">
+  <ul style="margin-left:22px">
+    <li><a href="https://github.com/yt-dlp/yt-dlp">yt-dlp</a> — เอนจินดาวน์โหลดหลัก</li>
+    <li><a href="https://pypi.org/project/imageio-ffmpeg/">imageio-ffmpeg</a> — ffmpeg binary สำหรับรวมไฟล์</li>
+    <li><a href="https://pyinstaller.org/">PyInstaller</a> — แพ็กเป็น EXE ไฟล์เดียว</li>
+  </ul>
+</div>
+
+<footer>Video Downloader GUI • MIT License • สร้างด้วย ❤️ และ yt-dlp</footer>
+</div>
+</body>
+</html>

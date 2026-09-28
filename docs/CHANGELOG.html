@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Video Downloader GUI — Changelog</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f8fafc;--card:#fff;--ink:#1e293b;--muted:#64748b;--brand:#5e76d3;--brand2:#e7301a;--accent:#4f46e5;--border:#e2e8f0;--ok:#16a34a;--tech:#0ea5e9}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Prompt',sans-serif;background:var(--bg);color:var(--ink);line-height:1.75}
+.wrap{max-width:860px;margin:0 auto;padding:0 24px 80px}
+.hero{background:linear-gradient(135deg,#5e76d3,#e7301a);padding:44px 24px;color:#fff;text-align:center}
+.hero h1{font-size:2rem;font-weight:700}
+.hero p{opacity:.9;font-weight:300;max-width:620px;margin:8px auto 0}
+nav.docnav{display:flex;gap:10px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+nav.docnav a{color:#fff;background:rgba(255,255,255,.15);padding:6px 16px;border-radius:8px;text-decoration:none;font-size:.9rem;border:1px solid rgba(255,255,255,.3)}
+nav.docnav a:hover{background:rgba(255,255,255,.3)}
+.timeline{position:relative;margin:40px 0 0;padding-left:34px}
+.timeline::before{content:"";position:absolute;left:10px;top:6px;bottom:6px;width:3px;border-radius:2px;background:linear-gradient(var(--brand),var(--brand2))}
+.release{position:relative;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px 26px;margin-bottom:24px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.release::before{content:"";position:absolute;left:-31px;top:26px;width:15px;height:15px;border-radius:50%;background:#fff;border:4px solid var(--brand)}
+.release h2{font-size:1.3rem;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.tag{font-size:.75rem;font-weight:600;background:#eef2ff;color:#3730a3;padding:3px 12px;border-radius:999px;border:1px solid #c7d2fe}
+.date{color:var(--muted);font-size:.9rem;font-weight:400}
+h3{font-size:1rem;margin:16px 0 8px}
+h3.added{color:var(--ok)} h3.tech{color:var(--tech)}
+ul{margin-left:22px} li{margin:5px 0}
+code{font-family:'JetBrains Mono',monospace;font-size:.85em;background:#eef2ff;color:#3730a3;padding:2px 6px;border-radius:6px}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+footer{text-align:center;color:var(--muted);font-size:.85rem;margin-top:40px}
+</style>
+</head>
+<body>
+<header class="hero">
+  <h1>🗓️ Changelog — Video Downloader GUI</h1>
+  <p>ประวัติการเปลี่ยนแปลงทั้งหมด อ้างอิงรูปแบบ Keep a Changelog + Semantic Versioning</p>
+  <nav class="docnav">
+    <a href="README.html">📖 README</a>
+    <a href="RESEARCH.html">🔬 Research</a>
+    <a href="CHANGELOG.html">🗓️ Changelog</a>
+    <a href="index.html">⬇️ ดาวน์โหลด</a>
+  </nav>
+</header>
+<div class="wrap">
+<div class="timeline">
+
+<div class="release">
+  <h2>เวอร์ชัน 1.0.0 <span class="tag">v1.0.0</span> <span class="date">— 28 กันยายน 2026</span></h2>
+  <p style="color:var(--muted);font-size:.92rem;margin-top:6px">🎉 รีลีสแรกอย่างเป็นทางการ</p>
+
+  <h3 class="added">✨ Added — ฟีเจอร์ใหม่</h3>
+  <ul>
+    <li>แอป GUI (tkinter) ดาวน์โหลดวีดีโอจากเว็บไซต์สาธารณะด้วยเอนจิน <b>yt-dlp</b></li>
+    <li>รองรับ<b>หลายลิงก์พร้อมกัน</b> (คิวดาวน์โหลด) พร้อมตารางแสดงสถานะรายการ</li>
+    <li>เลือกคุณภาพ: ดีที่สุด (mp4) / 1080p / 720p / 480p / แยกเสียงเป็น <b>MP3</b></li>
+    <li>แถบความคืบหน้า + เปอร์เซ็นต์ + ความเร็ว + เวลาที่เหลือ แบบเรียลไทม์</li>
+    <li>ปุ่ม<b>ยกเลิกทั้งหมด</b> — หยุดงานกลางคันอย่างปลอดภัย (ผ่าน progress hook)</li>
+    <li>จำกัดความเร็วดาวน์โหลด: 1 / 5 / 10 MB/s หรือไม่จำกัด</li>
+    <li>Bundle <b>ffmpeg</b> ผ่าน imageio-ffmpeg — รวมไฟล์วีดีโอ+เสียงและแปลง MP3 ได้ทันที</li>
+    <li>แพ็กเป็น <b>EXE ไฟล์เดียว</b>ด้วย PyInstaller (onefile, windowed) พร้อมไอคอนและ version resource</li>
+    <li>คู่มือ <a href="https://github.com/NarDecH/video-downloader-gui/blob/main/AGENT.md">AGENT.md</a> สำหรับผู้ร่วมพัฒนา/AI agent</li>
+    <li>เอกสาร README / RESEARCH / CHANGELOG ทั้ง Markdown และ HTML</li>
+    <li><a href="index.html">หน้าเว็บดาวน์โหลด</a>บน GitHub Pages — ดึง release ล่าสุดจาก GitHub API อัตโนมัติ พร้อมปุ่มดาวน์โหลดและ SHA256 checksum</li>
+    <li>GitHub Actions: build EXE และสร้าง release อัตโนมัติเมื่อ push tag <code>v*</code> + deploy Pages</li>
+  </ul>
+
+  <h3 class="tech">🔧 Technical — รายละเอียดเทคนิค</h3>
+  <ul>
+    <li>Python 3.14 / tkinter — สื่อสารระหว่างเธรดด้วย <code>queue.Queue</code> + <code>root.after()</code></li>
+    <li>yt-dlp 2026.08.19 — format selector บังคับ mp4, <code>ratelimit</code>, <code>concurrent_fragment_downloads</code></li>
+    <li>ffmpeg-win-x86_64 v7.1 (~25 MB) bundle ใน EXE</li>
+    <li>ขนาด EXE ~82.5 MB — smoke test ผ่าน (เปิดโปรแกรม 6 วินาทีไม่ crash)</li>
+  </ul>
+</div>
+
+</div>
+<footer>Video Downloader GUI • Changelog • MIT License</footer>
+</div>
+</body>
+</html>

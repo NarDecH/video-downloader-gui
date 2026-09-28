@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ดาวน์โหลด Video Downloader GUI — เวอร์ชันล่าสุด</title>
+<meta name="description" content="ดาวน์โหลด Video Downloader GUI เวอร์ชันล่าสุดสำหรับ Windows — ดึงข้อมูล release อัตโนมัติจาก GitHub พร้อม SHA256 checksum">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f172a;--card:#1e293b;--ink:#f1f5f9;--muted:#94a3b8;--brand:#818cf8;--brand2:#f87171;--accent:#a5b4fc;--border:#334155;--ok:#4ade80}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Prompt',sans-serif;background:radial-gradient(1200px 600px at 80% -10%,#312e81 0%,transparent 60%),radial-gradient(1000px 500px at -10% 110%,#7f1d1d 0%,transparent 55%),var(--bg);color:var(--ink);line-height:1.7;min-height:100vh}
+.wrap{max-width:880px;margin:0 auto;padding:0 24px 80px}
+header{text-align:center;padding:56px 0 30px}
+header img{max-width:min(100%,640px);border-radius:16px;box-shadow:0 20px 50px rgba(0,0,0,.45)}
+header h1{font-size:2.2rem;font-weight:700;margin-top:26px}
+header p{color:var(--muted);font-weight:300;max-width:620px;margin:10px auto 0}
+nav.docnav{display:flex;gap:10px;justify-content:center;margin-top:22px;flex-wrap:wrap}
+nav.docnav a{color:var(--ink);background:rgba(255,255,255,.06);border:1px solid var(--border);padding:6px 16px;border-radius:8px;text-decoration:none;font-size:.9rem;transition:.2s}
+nav.docnav a:hover{background:rgba(255,255,255,.14)}
+.release-card{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:34px;margin-top:34px;box-shadow:0 24px 60px rgba(0,0,0,.35)}
+.rel-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.rel-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.4);color:var(--ok);font-weight:600;font-size:.85rem;padding:5px 14px;border-radius:999px}
+.rel-tag .dot{width:8px;height:8px;border-radius:50%;background:var(--ok);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.rel-ver{font-size:1.9rem;font-weight:700;margin-top:12px}
+.rel-date{color:var(--muted);font-size:.95rem}
+.dl-btn{display:inline-flex;align-items:center;gap:12px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:1.15rem;font-weight:600;padding:16px 34px;border-radius:14px;text-decoration:none;margin-top:22px;box-shadow:0 10px 30px rgba(99,102,241,.4);transition:.2s}
+.dl-btn:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(99,102,241,.55)}
+.dl-btn small{display:block;font-size:.72rem;font-weight:400;opacity:.85}
+.dl-row{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-top:26px}
+.meta .m{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:14px;padding:14px 18px}
+.meta .m b{display:block;font-size:1.05rem}
+.meta .m span{color:var(--muted);font-size:.8rem}
+.checksum{margin-top:22px;background:#0b1220;border:1px dashed #475569;border-radius:14px;padding:16px 18px}
+.checksum .lbl{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+.checksum .lbl b{font-size:.9rem}
+.copy-btn{cursor:pointer;background:rgba(255,255,255,.08);border:1px solid var(--border);color:var(--ink);font-family:'Prompt';font-size:.8rem;padding:5px 14px;border-radius:8px;transition:.2s}
+.copy-btn:hover{background:rgba(255,255,255,.16)}
+.hash{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:#a5f3fc;word-break:break-all;line-height:1.6}
+.skel{color:var(--muted);animation:pulse 1.5s infinite}
+.err-box{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.4);border-radius:12px;padding:14px 18px;margin-top:14px;font-size:.9rem}
+.err-box a{color:var(--accent)}
+details.req{margin-top:24px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:16px;padding:20px 24px}
+details.req summary{cursor:pointer;font-weight:600}
+details.req ul{margin:12px 0 0 22px;color:var(--muted)}
+.steps{margin-top:26px}
+.steps h3{font-size:1.05rem;margin-bottom:12px}
+.steps ol{margin-left:22px;color:var(--muted)}
+.steps li{margin:6px 0}
+.steps code{background:#0b1220;border:1px solid var(--border);color:#a5f3fc;padding:2px 8px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:.8rem}
+.legal{margin-top:26px;border-left:3px solid #f59e0b;background:rgba(245,158,11,.07);border-radius:0 12px 12px 0;padding:14px 18px;font-size:.88rem;color:#fcd34d}
+footer{text-align:center;color:var(--muted);font-size:.85rem;margin-top:56px}
+footer a{color:var(--accent)}
+@media(max-width:640px){.release-card{padding:24px 20px}.dl-btn{width:100%;justify-content:center}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <img src="img/banner.png" alt="Video Downloader GUI">
+  <h1>⬇️ ดาวน์โหลด Video Downloader GUI</h1>
+  <p>แอปดาวน์โหลดวีดีโอจากเว็บไซต์สาธารณะ (YouTube, TikTok, Facebook, X/Twitter ฯลฯ) สำหรับ Windows — ไฟล์เดียวจบ ไม่ต้องติดตั้ง Python</p>
+  <nav class="docnav">
+    <a href="README.html">📖 README</a>
+    <a href="RESEARCH.html">🔬 Research</a>
+    <a href="CHANGELOG.html">🗓️ Changelog</a>
+    <a href="https://github.com/NarDecH/video-downloader-gui">💻 GitHub</a>
+  </nav>
+</header>
+
+<main class="release-card">
+  <div class="rel-top">
+    <span class="rel-tag"><span class="dot"></span> เวอร์ชันล่าสุด</span>
+    <span class="rel-date" id="rel-date"><span class="skel">กำลังโหลด…</span></span>
+  </div>
+  <div class="rel-ver" id="rel-ver"><span class="skel">v?.?.?</span></div>
+
+  <div class="dl-row">
+    <a class="dl-btn" id="dl-btn" href="https://github.com/NarDecH/video-downloader-gui/releases/latest" title="ดาวน์โหลดเวอร์ชันล่าสุด">
+      <span>⬇️</span>
+      <span>ดาวน์โหลดสำหรับ Windows<small id="dl-size">VideoDownloaderGUI.exe</small></span>
+    </a>
+    <div style="color:var(--muted);font-size:.88rem;max-width:300px">
+      ✓ รวม ffmpeg มาให้แล้ว<br>✓ ไม่ต้องติดตั้ง Python<br>✓ ฟรี โอเพนซอร์ส (MIT)
+    </div>
+  </div>
+
+  <div class="meta">
+    <div class="m"><b id="m-asset"><span class="skel">—</span></b><span>ชื่อไฟล์</span></div>
+    <div class="m"><b id="m-size"><span class="skel">—</span></b><span>ขนาดไฟล์</span></div>
+    <div class="m"><b id="m-date"><span class="skel">—</span></b><span>เผยแพร่เมื่อ</span></div>
+    <div class="m"><b id="m-downloads"><span class="skel">—</span></b><span>ยอดดาวน์โหลด</span></div>
+  </div>
+
+  <div class="checksum">
+    <div class="lbl">
+      <b>🔐 SHA-256 Checksum</b>
+      <button class="copy-btn" id="copy-btn">📋 คัดลอก</button>
+    </div>
+    <div class="hash" id="hash"><span class="skel">กำลังโหลด checksum จาก release…</span></div>
+  </div>
+
+  <div id="err" class="err-box" style="display:none"></div>
+
+  <details class="req" open>
+    <summary>💻 ความต้องการของระบบ &amp; วิธีตรวจไฟล์</summary>
+    <ul>
+      <li>Windows 10/11 (64-bit) — ไม่ต้องติดตั้ง Python หรือโปรแกรมเพิ่มเติม</li>
+      <li>อินเทอร์เน็ตสำหรับดาวน์โหลดวีดีโอ</li>
+    </ul>
+    <ul>
+      <li>ตรวจ checksum หลังดาวน์โหลด (PowerShell): <code>Get-FileHash .\VideoDownloaderGUI.exe -Algorithm SHA256</code> แล้วเทียบกับค่าด้านบน</li>
+      <li>ถ้า SmartScreen แสดงคำเตือน: กด <b>More info → Run anyway</b></li>
+    </ul>
+  </details>
+
+  <div class="steps">
+    <h3>🚀 วิธีใช้งานสั้น ๆ</h3>
+    <ol>
+      <li>เปิดโปรแกรม วางลิงก์วีดีโอ (ใส่ได้หลายลิงก์ บรรทัดละลิงก์)</li>
+      <li>เลือกคุณภาพและโฟลเดอร์ปลายทาง</li>
+      <li>กด <b>▶ เริ่มดาวน์โหลด</b> — เสร็จแล้วกด 📂 เปิดโฟลเดอร์ได้เลย</li>
+    </ol>
+  </div>
+
+  <div class="legal">⚖️ ใช้เฉพาะกับคอนเทนต์สาธารณะที่คุณมีสิทธิ์ดาวน์โหลดตามกฎหมายและเงื่อนไขของแต่ละเว็บไซต์ ห้ามใช้ละเมิดลิขสิทธิ์หรือเผยแพร่คอนเทนต์ส่วนบุคคลที่เจ้าของไม่ได้ยินยอม</div>
+</main>
+
+<footer>
+  <a href="https://github.com/NarDecH/video-downloader-gui">NarDecH/video-downloader-gui</a> • MIT License •
+  ข้อมูลเวอร์ชันดึงอัตโนมัติจาก <a href="https://docs.github.com/en/rest/releases/releases#get-the-latest-release">GitHub Releases API</a>
+</footer>
+</div>
+
+<script>
+const REPO = "NarDecH/video-downloader-gui";
+const API = `https://api.github.com/repos/${REPO}/releases/latest`;
+const CACHE_KEY = "vdg_latest_release";
+const CACHE_TTL = 60 * 60 * 1000; // 1 hour
+
+const $ = id => document.getElementById(id);
+
+function fmtSize(bytes) {
+  if (!bytes && bytes !== 0) return "—";
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + " KB";
+  return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+}
+function fmtDate(iso) {
+  try {
+    return new Date(iso).toLocaleDateString("th-TH", { year: "numeric", month: "long", day: "numeric" });
+  } catch { return iso || "—"; }
+}
+function pickAsset(rel) {
+  return (rel.assets || []).find(a => a.name.toLowerCase().endsWith(".exe")) ||
+         (rel.assets || []).find(a => a.name.toLowerCase().endsWith(".zip")) || null;
+}
+async function fetchChecksum(tag) {
+  const res = await fetch(`https://api.github.com/repos/${REPO}/releases/tags/${tag}`);
+  if (!res.ok) throw new Error("no release by tag");
+  const rel = await res.json();
+  const sum = (rel.assets || []).find(a => a.name === "checksums.txt");
+  if (!sum) return null;
+  const txt = await (await fetch(sum.browser_download_url)).text();
+  const line = txt.split(/\r?\n/).find(l => l.toLowerCase().includes(".exe"));
+  return line ? line.split(/\s+/)[0] : null;
+}
+function render(rel) {
+  const asset = pickAsset(rel);
+  $("rel-ver").textContent = rel.tag_name || rel.name || "latest";
+  $("rel-date").textContent = "เผยแพร่ " + fmtDate(rel.published_at);
+  if (asset) {
+    $("dl-btn").href = asset.browser_download_url;
+    $("dl-size").textContent = asset.name + " • " + fmtSize(asset.size);
+    $("m-asset").textContent = asset.name;
+    $("m-size").textContent = fmtSize(asset.size);
+    $("m-downloads").textContent = (asset.download_count || 0).toLocaleString() + " ครั้ง";
+  }
+  $("m-date").textContent = fmtDate(rel.published_at);
+  if (rel.body) {
+    const m = rel.body.match(/sha256\s*:?\s*`?([a-f0-9]{64})/i);
+    if (m) $("hash").textContent = m[1];
+  }
+}
+function showError(msg) {
+  const box = $("err");
+  box.style.display = "block";
+  box.innerHTML = msg;
+  $("rel-ver").textContent = "ไม่สามารถโหลดข้อมูลอัตโนมัติ";
+  $("hash").textContent = "—";
+}
+async function init() {
+  let rel = null;
+  try {
+    const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
+    if (cached && Date.now() - cached.t < CACHE_TTL) rel = cached.v;
+  } catch {}
+  if (!rel) {
+    const res = await fetch(API, { headers: { Accept: "application/vnd.github+json" } });
+    if (res.status === 403) {
+      showError('API rate limit หมดชั่วคราว — ดาวน์โหลดได้ที่ <a href="https://github.com/NarDecH/video-downloader-gui/releases/latest">GitHub Releases</a> โดยตรง');
+      return;
+    }
+    if (!res.ok) {
+      showError('โหลดข้อมูล release ไม่สำเร็จ — <a href="https://github.com/NarDecH/video-downloader-gui/releases/latest">ไปที่ GitHub Releases</a>');
+      return;
+    }
+    rel = await res.json();
+    try { localStorage.setItem(CACHE_KEY, JSON.stringify({ t: Date.now(), v: rel })); } catch {}
+  }
+  render(rel);
+  fetchChecksum(rel.tag_name).then(h => { if (h) $("hash").textContent = h; }).catch(() => {});
+}
+$("copy-btn").addEventListener("click", () => {
+  const t = $("hash").textContent.trim();
+  if (t && t !== "—") navigator.clipboard.writeText(t).then(() => {
+    const b = $("copy-btn"); b.textContent = "✅ คัดลอกแล้ว";
+    setTimeout(() => (b.textContent = "📋 คัดลอก"), 1800);
+  });
+});
+init();
+</script>
+</body>
+</html>

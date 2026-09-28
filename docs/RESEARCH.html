@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Video Downloader GUI — Research</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f8fafc;--card:#fff;--ink:#1e293b;--muted:#64748b;--brand:#5e76d3;--brand2:#e7301a;--accent:#4f46e5;--border:#e2e8f0}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Prompt',sans-serif;background:var(--bg);color:var(--ink);line-height:1.75}
+.wrap{max-width:980px;margin:0 auto;padding:0 24px 80px}
+.hero{background:linear-gradient(135deg,#5e76d3,#e7301a);padding:44px 24px;color:#fff;text-align:center}
+.hero h1{font-size:2rem;font-weight:700}
+.hero p{opacity:.9;font-weight:300;max-width:640px;margin:8px auto 0}
+nav.docnav{display:flex;gap:10px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+nav.docnav a{color:#fff;background:rgba(255,255,255,.15);padding:6px 16px;border-radius:8px;text-decoration:none;font-size:.9rem;border:1px solid rgba(255,255,255,.3)}
+nav.docnav a:hover{background:rgba(255,255,255,.3)}
+h2{font-size:1.4rem;margin:44px 0 14px;display:flex;align-items:center;gap:10px}
+h2::before{content:"";width:6px;height:26px;border-radius:3px;background:linear-gradient(var(--brand),var(--brand2))}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px 26px;margin:14px 0;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.92rem;background:var(--card);border-radius:12px;overflow:hidden}
+th{background:#f1f5f9;text-align:left;padding:10px 14px;font-weight:600}
+td{padding:10px 14px;border-top:1px solid var(--border)}
+tr:hover td{background:#f8fafc}
+code{font-family:'JetBrains Mono',monospace;font-size:.88em;background:#eef2ff;color:#3730a3;padding:2px 6px;border-radius:6px}
+pre{background:#0f172a;color:#e2e8f0;border-radius:12px;padding:16px 20px;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.82rem;margin:12px 0}
+.good{color:#16a34a;font-weight:600}
+.conclude{border-left:4px solid var(--ok,#16a34a);background:#f0fdf4;padding:12px 18px;border-radius:0 10px 10px 0;margin:12px 0}
+.conclude b{color:#166534}
+figure{text-align:center;margin:18px 0}
+figure img{max-width:100%;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.12)}
+ul,ol{margin-left:22px}
+li{margin:4px 0}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+footer{text-align:center;color:var(--muted);font-size:.85rem;margin-top:50px}
+@media(max-width:640px){table{font-size:.8rem}th,td{padding:8px 10px}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <h1>🔬 Research — Video Downloader GUI</h1>
+  <p>สรุปงานวิจัยและเหตุผลการตัดสินใจทางเทคนิค: เอนจินดาวน์โหลด, เฟรมเวิร์ก UI, ffmpeg, threading, การแพ็ก EXE และการกระจายไฟล์</p>
+  <nav class="docnav">
+    <a href="README.html">📖 README</a>
+    <a href="RESEARCH.html">🔬 Research</a>
+    <a href="CHANGELOG.html">🗓️ Changelog</a>
+    <a href="index.html">⬇️ ดาวน์โหลด</a>
+  </nav>
+</header>
+<div class="wrap">
+
+<h2>1️⃣ การเลือกเอนจินดาวน์โหลด</h2>
+<div class="card">
+<table>
+<tr><th>ตัวเลือก</th><th>รองรับเว็บไซต์</th><th>ดูแลรักษา</th><th>หมายเหตุ</th></tr>
+<tr><td><b>yt-dlp</b> <span class="good">✅ เลือกใช้</span></td><td>1,000+ เว็บไซต์</td><td>Active — release ทุกเดือน</td><td>ไลบรารี Python ฝังได้โดยตรง</td></tr>
+<tr><td>youtube-dl (ต้นทาง)</td><td>~1,000</td><td>ช้ามากนับจาก 2021</td><td>ล้าสมัย</td></tr>
+<tr><td>gallery-dl</td><td>เน้นรูปภาพ</td><td>Active</td><td>ไม่ตรงงานวีดีโอ</td></tr>
+<tr><td>พัฒนา scraper เอง</td><td>เว็บละ 1 ชุดโค้ด</td><td>ต้องดูแลเองทุกเว็บ</td><td>บำรุงรักษาไม่ไหว</td></tr>
+</table>
+<div class="conclude"><b>ข้อสรุป:</b> yt-dlp — รองรับเว็บไซต์มากที่สุด, เป็น Python จึง <code>import yt_dlp</code> ได้เลย, มี progress hooks / format selector / rate limit ในตัว, release ถี่พอจะตามการเปลี่ยนแปลงของแพลตฟอร์ม</div>
+<p>สิ่งที่ใช้จาก yt-dlp ในโปรเจกต์นี้:</p>
+<ul>
+<li><code>format</code> เช่น <code>bestvideo[height<=720][ext=mp4]+bestaudio[ext=m4a]/best</code> — บังคับ mp4 เล่นได้ทุกเครื่อง</li>
+<li><code>progress_hooks</code> — ดึง % / ความเร็ว / ETA ขึ้น GUI</li>
+<li><code>ratelimit</code> + <code>concurrent_fragment_downloads</code> — จำกัด/เร่งความเร็ว</li>
+<li><code>FFmpegExtractAudio</code> — โหมดแยกเสียง MP3</li>
+</ul>
+</div>
+
+<h2>2️⃣ การเลือกเฟรมเวิร์ก GUI</h2>
+<div class="card">
+<table>
+<tr><th>ตัวเลือก</th><th>ขนาดเพิ่ม</th><th>ธีม</th><th>บทสรุป</th></tr>
+<tr><td><b>tkinter/ttk</b> <span class="good">✅ เลือกใช้</span></td><td>+0 MB (มากับ Python)</td><td>พอใช้</td><td>เสถียร เล็กที่สุด เพียงพอกับงาน</td></tr>
+<tr><td>CustomTkinter</td><td>+10 MB</td><td>สวยกว่า</td><td>สำรองเป็น phase 2</td></tr>
+<tr><td>PySide6 / Qt</td><td>+60–80 MB</td><td>สวย</td><td>over-engineering</td></tr>
+<tr><td>Electron / Tauri</td><td>+100 / +5 MB</td><td>สวยมาก</td><td>ต้องเขียน 2 ภาษา ไม่คุ้ม</td></tr>
+</table>
+<div class="conclude"><b>ข้อสรุป:</b> tkinter — เหมาะกับเครื่องมือ "เปิด วางลิงก์ กดดาวน์โหลด" ถ้าอนาคตต้องการธีมสวยขึ้น เปลี่ยนไป CustomTkinter โดยคงโครงสร้างคลาส <code>App</code> เดิมได้</div>
+</div>
+
+<h2>3️⃣ การจัดการ ffmpeg</h2>
+<div class="card">
+<p>วิดีโอคุณภาพสูงมักแยกไฟล์วีดีโอกับเสียง ต้องใช้ ffmpeg รวมกลับ — ทางเลือกที่พิจารณา:</p>
+<ul>
+<li>❌ บังคับผู้ใช้ติดตั้ง ffmpeg เอง — ขัดข้อง "ไม่ต้องติดตั้งอะไร"</li>
+<li>❌ ดาวน์โหลด ffmpeg ตอน first-run — ซับซ้อน เสี่ยงโดน antivirus</li>
+<li>✅ <b>Bundle ผ่านแพ็กเกจ imageio-ffmpeg</b> — copy binary (ffmpeg-win-x86_64 v7.1, ~25 MB) ลง EXE ตอน build ผ่าน <code>binaries</code> ใน .spec</li>
+</ul>
+<p>ลำดับค้นหาตอน runtime: <code>imageio_ffmpeg.get_ffmpeg_exe()</code> → ข้าง ๆ EXE → <code>_MEIPASS</code> → PATH</p>
+</div>
+
+<h2>4️⃣ Threading model ของ GUI</h2>
+<div class="card">
+<pre>[Thread: worker]                     [Thread: UI (main)]
+  yt_dlp.extract_info()  --queue-->   root.after(100ms) poll
+  progress_hooks เช็ค stop_flag        อัปเดต Treeview/Progressbar
+  raise DownloadCancelled เมื่อยกเลิก</pre>
+<ul>
+<li>tkinter ไม่ thread-safe → ทุกอย่างที่แตะ UI ต้องอยู่บน main thread</li>
+<li>worker สื่อสารผ่าน <code>queue.Queue</code> เท่านั้น</li>
+<li>การยกเลิก: UI ตั้ง <code>threading.Event</code> → progress hook (บน worker thread) เช็คแล้ว raise <code>DownloadCancelled</code> → yt-dlp หยุดอย่างสะอาด</li>
+</ul>
+</div>
+
+<h2>5️⃣ การแพ็ก EXE ด้วย PyInstaller</h2>
+<div class="card">
+<ul>
+<li>โหมด <b>onefile + windowed</b> — ไฟล์เดียว ไม่มีหน้าต่างดำ</li>
+<li>แนบ <code>icon.ico</code> 6 ขนาด (16–256px) + <code>version_info.txt</code> (metadata ของ EXE)</li>
+<li>ผลทดสอบ: build สำเร็จ, เปิดโปรแกรมได้ (smoke test 6 วินาที), ขนาด ~82.5 MB</li>
+<li>ข้อแลกเปลี่ยน: onefile แตกไฟล์ลง temp ตอนเปิด (ช้า 2–5 วิแรก) — เปลี่ยนเป็น onedir ได้จาก .spec เดิม</li>
+</ul>
+</div>
+
+<h2>6️⃣ การกระจายไฟล์ (Distribution)</h2>
+<div class="card">
+<table>
+<tr><th>ช่องทาง</th><th>ข้อดี</th><th>ข้อเสีย</th></tr>
+<tr><td><b>GitHub Releases + Actions</b> <span class="good">✅ เลือกใช้</span></td><td>ฟรี build อัตโนมัติจาก tag มี SHA256</td><td>SmartScreen ยังเตือน (ไม่มี code signing)</td></tr>
+<tr><td>Code signing cert</td><td>ไม่มีเตือน</td><td>~$100–400/ปี</td></tr>
+<tr><td>Microsoft Store</td><td>การรับรองจาก MS</td><td>ค่าธรรมเนียม + review</td></tr>
+</table>
+<p><b>GitHub Actions (release.yml):</b> push tag <code>v*</code> → ติดตั้ง Python + deps → build ด้วย .spec เดียวกับ local → คำนวณ SHA256 → สร้าง release พร้อมแนบ EXE และ <code>checksums.txt</code></p>
+<p><b>GitHub Pages:</b> หน้าเว็บสถิติ (ไม่มี build step) ดึง <code>api.github.com/repos/.../releases/latest</code> แล้วแสดงเวอร์ชัน วันที่ ขนาดไฟล์ ปุ่มดาวน์โหลด และ SHA256 จาก <code>checksums.txt</code> — checksum บนหน้าเว็บจึง<b>ตรงกับไฟล์จริงเสมอ</b> เพราะมาจาก release เดียวกัน (มี cache ใน localStorage 1 ชม. กันโดน API rate limit)</p>
+</div>
+
+<h2>7️⃣ ความเสี่ยงและการรับมือ</h2>
+<div class="card">
+<table>
+<tr><th>ความเสี่ยง</th><th>ระดับ</th><th>การรับมือ</th></tr>
+<tr><td>เว็บไซต์เปลี่ยนโครงสร้าง → ดาวน์โหลดพัง</td><td>สูง</td><td>อัปเดต yt-dlp บ่อย + CI build จาก tag ใหม่ง่าย</td></tr>
+<tr><td>SmartScreen เตือนผู้ใช้ใหม่</td><td>กลาง</td><td>เอกสาร "Run anyway" + เผยแพร่ SHA256 ให้ตรวจ</td></tr>
+<tr><td>การใช้งานผิดกฎหมาย</td><td>กลาง</td><td>ข้อความ Legal ชัดเจน ไม่ใส่ฟีเจอร์เจาะจงเว็บผิดกฎหมาย</td></tr>
+<tr><td>API rate limit บนหน้าเว็บ</td><td>ต่ำ</td><td>cache localStorage 1 ชม. + fallback ลิงก์ Releases</td></tr>
+<tr><td>Python 3.14 ใหม่มาก</td><td>ต่ำ</td><td>ทดสอบ build ผ่านแล้ว, CI pin 3.13 สำรอง</td></tr>
+</table>
+</div>
+
+<h2>8️⃣ Roadmap</h2>
+<div class="card">
+<ul>
+<li>คิวดาวน์โหลดลากจัดลำดับ + จำกัดงานขนาน</li>
+<li>รองรับ cookies สำหรับคอนเทนต์ที่ต้องล็อกอิน</li>
+<li>ปุ่ม "เปิดไฟล์หลังเสร็จ" + notification ระบบ</li>
+<li>Auto-update (เช็ค release API จากในแอป)</li>
+<li>ธีมมืด/สว่าง (CustomTkinter)</li>
+</ul>
+</div>
+
+<footer>Video Downloader GUI • Research • MIT License</footer>
+</div>
+</body>
+</html>
