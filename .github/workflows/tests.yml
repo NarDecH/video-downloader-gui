@@ -28,7 +28,9 @@ jobs:
       - name: Compile check
         run: python -m py_compile main.py html_media.py
 
-      - name: Run fallback test suite
+      - name: Run fallback test suite (with xvfb for GUI smoke)
         env:
           PYTHONIOENCODING: utf-8
-        run: python tests/run_tests.py
+        run: |
+          sudo apt-get install -y xvfb
+          xvfb-run -a python tests/run_tests.py

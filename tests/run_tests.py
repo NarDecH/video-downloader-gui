@@ -96,13 +96,16 @@ def test_main_integration() -> None:
 
 def test_gui_smoke() -> None:
     print("\n[6] GUI เปิดได้หลังแก้โค้ด")
+    if not os.environ.get("DISPLAY") and sys.platform == "linux":
+        print("  ⏭ SKIP (no display on CI)")
+        return
     import tkinter as tk
 
     from main import App
 
     root = tk.Tk()
     root.withdraw()
-    App(root)
+    app = App(root)
     root.after(1200, root.destroy)
     root.mainloop()
     check("GUI smoke test", True)
