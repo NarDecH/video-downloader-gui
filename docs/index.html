@@ -157,15 +157,11 @@ function pickAsset(rel) {
   return (rel.assets || []).find(a => a.name.toLowerCase().endsWith(".exe")) ||
          (rel.assets || []).find(a => a.name.toLowerCase().endsWith(".zip")) || null;
 }
-async function fetchChecksum(tag) {
-  const res = await fetch(`https://api.github.com/repos/${REPO}/releases/tags/${tag}`);
-  if (!res.ok) throw new Error("no release by tag");
-  const rel = await res.json();
-  const sum = (rel.assets || []).find(a => a.name === "checksums.txt");
-  if (!sum) return null;
-  const txt = await (await fetch(sum.browser_download_url)).text();
-  const line = txt.split(/\r?\n/).find(l => l.toLowerCase().includes(".exe"));
-  return line ? line.split(/\s+/)[0] : null;
+function hashFromBody(body) {
+  if (!body) return null;
+  // hash อยู่ใน code fence ของ release body: "SHA256" ... ```\n<hash>  <filename>
+  const m = body.match(/sha256[^a-f0-9]{0,120}([a-f0-9]{64})/i) || body.match(/\b([a-f0-9]{64})\b/);
+  return m ? m[1].toLowerCase() : null;
 }
 function render(rel) {
   const asset = pickAsset(rel);
@@ -179,10 +175,8 @@ function render(rel) {
     $("m-downloads").textContent = (asset.download_count || 0).toLocaleString() + " ครั้ง";
   }
   $("m-date").textContent = fmtDate(rel.published_at);
-  if (rel.body) {
-    const m = rel.body.match(/sha256\s*:?\s*`?([a-f0-9]{64})/i);
-    if (m) $("hash").textContent = m[1];
-  }
+  const h = hashFromBody(rel.body);
+  $("hash").textContent = h || "ดูค่า SHA256 ได้ที่ release notes บน GitHub";
 }
 function showError(msg) {
   const box = $("err");
@@ -211,7 +205,6 @@ async function init() {
     try { localStorage.setItem(CACHE_KEY, JSON.stringify({ t: Date.now(), v: rel })); } catch {}
   }
   render(rel);
-  fetchChecksum(rel.tag_name).then(h => { if (h) $("hash").textContent = h; }).catch(() => {});
 }
 $("copy-btn").addEventListener("click", () => {
   const t = $("hash").textContent.trim();
