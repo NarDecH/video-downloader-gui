@@ -15,6 +15,10 @@ android {
         targetSdk = 34
         versionCode = 3
         versionName = "1.2.0"
+        // เอนจิน yt-dlp/ffmpeg แพ็ก .so ตาม ABI — ตัด x86 (32-bit emulator) ทิ้งเพื่อคุมขนาด APK
+        ndk {
+            abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86_64")
+        }
     }
 
     signingConfigs {
@@ -58,6 +62,10 @@ dependencies {
     implementation("com.github.TeamNewPipe:NewPipeExtractor:v0.24.6")
     // OkHttp: HTTP client ที่ NewPipeExtractor ใช้ + ใช้ดาวน์โหลดเอง
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    // เอนจิน yt-dlp + ffmpeg จริงบน Android (Python runtime + ffmpeg แพ็กใน .so)
+    // — รองรับลิงก์ทั่วไป/หลายพันเว็บไซต์, HLS/DASH และการรวมไฟล์ video+audio
+    implementation("io.github.junkfood02.youtubedl-android:library:0.18.1")
+    implementation("io.github.junkfood02.youtubedl-android:ffmpeg:0.18.1")
     // ส่วน UI พื้นฐาน
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.appcompat:appcompat:1.7.0")

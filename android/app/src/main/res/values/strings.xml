@@ -11,4 +11,8 @@
     <string name="done">เสร็จสิ้น ✓ บันทึกที่ Downloads/</string>
     <string name="error_generic">เกิดข้อผิดพลาด: %1$s</string>
     <string name="notif_channel">การดาวน์โหลด</string>
+    <string name="engine_preparing">กำลังเตรียมเอนจิน yt-dlp (ครั้งแรกใช้เวลาสักครู่)…</string>
+    <string name="engine_updating">กำลังอัปเดตเอนจิน yt-dlp ให้เป็นเวอร์ชันล่าสุด…</string>
+    <string name="no_video_found">ไม่พบวิดีโอในลิงก์นี้ — ลองวางลิงก์หน้าที่เล่นวีดีโอโดยตรง</string>
+    <string name="generic_failed">ดาวน์โหลดไม่สำเร็จ: %1$s</string>
 </resources>

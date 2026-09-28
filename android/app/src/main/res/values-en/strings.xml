@@ -11,4 +11,8 @@
     <string name="done">Done ✓ Saved to Downloads/</string>
     <string name="error_generic">Error: %1$s</string>
     <string name="notif_channel">Downloads</string>
+    <string name="engine_preparing">Preparing the yt-dlp engine (first run takes a moment)…</string>
+    <string name="engine_updating">Updating the yt-dlp engine to the latest version…</string>
+    <string name="no_video_found">No video found for this link — try pasting the page that plays the video</string>
+    <string name="generic_failed">Download failed: %1$s</string>
 </resources>
