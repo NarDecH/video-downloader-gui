@@ -2,6 +2,35 @@
 
 รูปแบบอ้างอิง [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) และใช้ [Semantic Versioning](https://semver.org/)
 
+## [Unreleased]
+
+### Added (เพิ่มใหม่)
+- **Android: เอนจิน yt-dlp + ffmpeg จริงบนแอป — พร้อมใช้งานกับลิงก์ทั่วไป** (youtubedl-android):
+  - วาง/แชร์ลิงก์จาก**เว็บใดก็ได้** (หลายพันเว็บไซต์) — ไม่จำกัดแค่ YouTube/SoundCloud/Bandcamp อีกต่อไป
+  - รองรับ **HLS (.m3u8) และ DASH (.mpd)** รวมถึงเคส video+audio แยกไฟล์ที่ต้อง merge ด้วย ffmpeg (แพ็กมาในแอป) และแปลงเป็น mp3
+  - **โหมดสำรองแยกสื่อจากหน้าเว็บ** พอร์ตจากเดสก์ท็อป: lazy-load `data-*`, สื่อใน JSON/สคริปต์ (escape `\/`, `\u0026`), manifest ใน player, iframe player — ใช้กับหน้า `player.html` ที่ฝัง player ภายนอกได้
+  - เลือกคุณภาพสำหรับลิงก์ทั่วไป: ดีที่สุด / 1080p / 720p / 480p / เสียงเท่านั้น (mp3) — selector เดียวกับเดสก์ท็อป
+  - **อัปเดตเอนจิน yt-dlp อัตโนมัติ** ครั้งแรกหลังติดตั้ง (จำสถานะไว้; เว็บเปลี่ยนบ่อยเอนจินต้องใหม่) — อัปเดตไม่ได้ก็ยังใช้เวอร์ชันที่แพ็กมาได้
+  - บันทึกเข้า `Downloads/` ผ่าน MediaStore อย่างถูกต้องบน Android 10+ (Android 9 ลงไปใช้เส้นทางเดิมพร้อมขอสิทธิ์)
+  - ลำดับการทำงานต่อลิงก์: NewPipe (เว็บรู้จัก) → เอนจิน yt-dlp → โหมดสำรองแยกสื่อ → ลองทีละ candidate จนสำเร็จ พร้อม progress %
+  - APK ใหญ่ขึ้นเป็น ~156 MB เพราะแพ็ก Python + ffmpeg (ABI: arm64-v8a / armeabi-v7a / x86_64)
+  - เทสต์ JVM ของ scraper 10 เคส (ไม่ใช้เครือข่าย) และยืนยัน build debug+release (R8) ผ่านทั้งคู่
+- **เบราว์เซอร์ในแอป (WebView2)** — พิมพ์ URL เพื่อเปิดหน้าเว็บที่ต้องการในแอป (pywebview รันเป็นโปรเซสลูกบน MainThread ของตัวเอง สื่อสารผ่าน localhost TCP; ผู้ใช้คลิกลิงก์ในหน้าได้ปกติ ช่อง URL ตามอัตโนมัติ; ถ้าเปิดไม่ได้ (ไม่มี WebView2) จะ fallback เปิดเบราว์เซอร์ระบบให้เอง)
+- **ปุ่ม "ดาวน์โหลดวีดีโอที่กำลังแสดง"** — สแกนหน้าที่เปิดอยู่ในเบราว์เซอร์แล้วดึงวีดีโอตรงจากหน้านั้น: จับ `<video>/<source>` ที่กำลังเล่น (currentSrc), **performance entries** (เจอ manifest `.m3u8` ที่ hls.js โหลดหลังกดเล่น, ไฟล์ mp4 ตรง) และ iframe player — จัดลำดับ candidate อัตโนมัติ (ไฟล์ตรง → HLS/DASH ผ่านเอนจิน yt-dlp → iframe) ลองทีละตัวจนสำเร็จ
+- **ระบบไฟล์ log อย่างละเอียดเพื่อวิเคราะห์/ดีบัก** — `%APPDATA%/video-downloader/logs/vdl.log` (หมุนเวียน 1 MB × 5 ไฟล์, UTF-8): หัวเซสชัน (เวอร์ชัน/OS/Python/ffmpeg/yt-dlp), ข้อความภายในของ yt-dlp ทั้งหมด (YtDlpLogger), ทุกขั้นตอนของโหมดสำรอง (fetch/Content-Type/manifest/iframe), การสแกนหน้าเว็บในเบราว์เซอร์พร้อมรายการ candidate, และ traceback ครบทุกความผิดพลาด — เปิดโฟลเดอร์จากเมนู **ช่วยเหลือ → เปิดโฟลเดอร์ log…**; โปรเซสเบราว์เซอร์เขียนแยกไฟล์ `vdl-browser.log` (กันชนกันตอน rotate)
+- **โหมดสำรองจับสื่อได้กว้างขึ้น — รองรับเว็บได้มากกว่าเดิม**:
+  - **iframe player ภายนอก** — หน้าที่ฝังวีดีโอผ่าน player ภายนอก (เช่น WordPress) จะตามเข้าไปหน้า player (ลึก 1 ระดับ, สูงสุด 5 iframe) แล้วดึงสื่อจากในนั้นต่อ
+  - **สตรีม HLS/DASH** (.m3u8/.mpd) ที่มักซ่อนในสคริปต์ของ player — จับได้และส่งต่อให้เอนจิน yt-dlp ดาวน์โหลดเอง (ใช้คุณภาพ/จำกัดความเร็ว/MP3 ที่ตั้งไว้ด้วย)
+  - **lazy-load** — attribute `data-src` / `data-video-src` / `data-mp4` / `data-hls` ฯลฯ
+  - **สื่อที่ฝังใน JSON/สคริปต์** — player config, JSON-LD `contentUrl`, `__NEXT_DATA__` (รวมแบบ escape `\/` และ `\u0026`)
+  - **ลิงก์ endpoint ไม่มีนามสกุล** (เช่น `/getvideo?id=1`) — ตรวจจาก Content-Type แล้วสตรีม พร้อมตั้งนามสกุลไฟล์ให้อัตโนมัติ
+  - **meta เพิ่ม**: `twitter:player:stream`
+- **ส่ง Referer ของหน้าต้นทาง** ตอนโหลดสื่อ **และตอนส่ง manifest/iframe ให้เอนจิน yt-dlp** — ผ่าน CDN ที่ตรวจ hotlink ได้มากขึ้น
+- **อ่านหน้าเว็บตาม charset จริง** (จาก Content-Type / `<meta charset>`) — รองรับเว็บไทย windows-874
+- **วางข้อความปน URL ได้** — แตกลิงก์ออกจากข้อความแชร์/ย่อหน้าอัตโนมัติ (`www.` เติม https ให้)
+- ข้าม `blob:`/`data:` URL (MediaSource) อย่างชัดเจน — ไม่เซฟไฟล์เพี้ยน
+- ชุดทดสอบ 16 → **61 เคส** — เพิ่ม fixture จำลองเว็บจริง (iframe + lazy-load + HLS + JSON), เทสต์ localhost server แบบออฟไลน์, เทสต์ระบบ log และการจัดลำดับ candidate ของเบราว์เซอร์
+
 ## [1.2.0] — 2026-09-28
 
 ### Added (เพิ่มใหม่)

@@ -45,6 +45,20 @@ footer{text-align:center;color:var(--muted);font-size:.85rem;margin-top:40px}
   </nav>
 </header>
 <div class="wrap">
+<div class="release">
+  <h2>เวอร์ชันถัดไป <span class="tag">Unreleased</span></h2>
+  <h3 class="added">✨ Added — ฟีเจอร์ใหม่</h3>
+  <ul>
+    <li><b>Android: เอนจิน yt-dlp + ffmpeg จริงในแอป — พร้อมใช้งานกับลิงก์ทั่วไป:</b> รับลิงก์จากเว็บใดก็ได้ (หลายพันเว็บ) • HLS/DASH + merge video+audio ด้วย ffmpeg + แปลง mp3 • โหมดสำรองแยกสื่อจากหน้าเว็บ (lazy-load / JSON / manifest / iframe — ใช้กับ <code>player.html</code> ฝัง player ได้) • เลือกคุณภาพ best/1080/720/480/mp3 • อัปเดตเอนจิน yt-dlp อัตโนมัติครั้งแรกหลังติดตั้ง • บันทึกเข้า Downloads ผ่าน MediaStore • APK ~156 MB (แพ็ก Python+ffmpeg: arm64-v8a/armeabi-v7a/x86_64) • เทสต์ scraper 10 เคส + build debug/release ผ่าน</li>
+    <li><b>เบราว์เซอร์ในแอป (WebView2)</b> — พิมพ์ URL เปิดหน้าเว็บที่ต้องการในแอป (pywebview รันเป็นโปรเซสลูก สื่อสารผ่าน localhost; ช่อง URL ตามการคลิกลิงก์อัตโนมัติ; ถ้าเปิดไม่ได้ fallback ไปเบราว์เซอร์ระบบ)</li>
+    <li><b>ปุ่ม "ดาวน์โหลดวีดีโอที่กำลังแสดง"</b> — สแกนหน้าที่เปิดอยู่: video/source ที่กำลังเล่น + performance entries (manifest .m3u8 ที่ hls.js โหลด, ไฟล์ตรง) + iframe player → จัดลำดับดาวน์โหลดอัตโนมัติ (ไฟล์ตรง → HLS/DASH ผ่าน yt-dlp → iframe)</li>
+    <li><b>ระบบ log อย่างละเอียดเพื่อวิเคราะห์/ดีบัก</b> — <code>logs/vdl.log</code> หมุนเวียน 1 MB × 5: หัวเซสชัน (เวอร์ชัน/OS/ffmpeg/yt-dlp), ข้อความภายใน yt-dlp, ทุกขั้นของโหมดสำรอง/เบราว์เซอร์ + traceback ครบ • เมนู ช่วยเหลือ → เปิดโฟลเดอร์ log… • เบราว์เซอร์แยกไฟล์ <code>vdl-browser.log</code></li>
+    <li><b>โหมดสำรองจับสื่อได้กว้างขึ้น — รองรับเว็บได้มากกว่าเดิม:</b> <b>iframe player ภายนอก</b> (ตามเข้าไปหน้า player ลึก 1 ระดับ สูงสุด 5 iframe) • สตรีม <b>HLS/DASH</b> (<code>.m3u8</code>/<code>.mpd</code> ส่งต่อให้เอนจิน yt-dlp) • <b>lazy-load</b> <code>data-src</code>/<code>data-video-src</code> • สื่อใน <b>JSON/สคริปต์</b> (player config / JSON-LD, รวมแบบ escape) • ลิงก์ endpoint <b>ไม่มีนามสกุล</b> (ตรวจจาก Content-Type)</li>
+    <li>ส่ง <b>Referer</b> ของหน้าต้นทางตอนโหลดสื่อ <b>และตอนส่ง manifest/iframe ให้เอนจิน yt-dlp</b> (ผ่าน CDN ตรวจ hotlink) • อ่านหน้าเว็บตาม <b>charset</b> จริง (รองรับ windows-874) • วาง<b>ข้อความปน URL</b> ได้ (แตกลิงก์อัตโนมัติ) • ข้าม <code>blob:</code>/<code>data:</code> URL</li>
+    <li>ชุดทดสอบ 16 → <b>61 เคส</b> — fixture จำลองเว็บจริง (iframe + lazy-load + HLS + JSON), เทสต์ localhost server ออฟไลน์, เทสต์ระบบ log + การจัดลำดับ candidate</li>
+  </ul>
+</div>
+
 <div class="timeline">
 
 <div class="release">
