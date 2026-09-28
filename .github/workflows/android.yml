@@ -21,8 +21,11 @@ jobs:
           distribution: temurin
           java-version: "21"
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Accept Android SDK licenses
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null 2>&1 || true
+          echo "sdk.dir=$ANDROID_HOME" > android/local.properties
+          echo "ANDROID_HOME=$ANDROID_HOME"
 
       - name: Decode signing keystore
         run: echo -n "$ANDROID_KEYSTORE_B64" | base64 -d > /tmp/release.jks
