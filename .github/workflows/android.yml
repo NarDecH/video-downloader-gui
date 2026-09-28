@@ -104,8 +104,36 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/data/latest.json
-          if git diff --cached --quiet; then echo "no changes"; exit 0; fi
-          git commit -m "chore: update latest.json for ${{ github.ref_name }} [skip ci]"
-          git pull --rebase origin main || true
-          git push origin HEAD:main
+          for i in 1 2 3; do
+            git fetch origin main
+            # commit จาก branch ที่ตั้งบน origin/main ล่าสุดเสมอ — ไม่แย่ง race กับ workflow ฝั่ง EXE
+            # (reset --hard ไม่ลบ untracked ไฟล์ artifact เช่น apk/checksums)
+            git switch -C json-back origin/main
+            git reset --hard origin/main
+            TAG="${{ github.ref_name }}"
+            APK_SHA=$(cut -d' ' -f1 android-checksums.txt)
+            mkdir -p docs/data
+            python3 - <<PYEOF
+            import json, pathlib
+            tag = "$TAG"
+            apk_sha = "$APK_SHA"
+            path = pathlib.Path("docs/data/latest.json")
+            data = {}
+            if path.exists():
+                data = json.loads(path.read_text(encoding="utf-8"))
+            data["tag"] = tag
+            data["published_at"] = "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            data["apk"] = {"name": f"VideoDownloaderGUI-android-{tag}.apk",
+                           "url": f"https://github.com/NarDecH/video-downloader-gui/releases/download/{tag}/VideoDownloaderGUI-android-{tag}.apk",
+                           "sha256": apk_sha}
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+            PYEOF
+            git add docs/data/latest.json
+            if git diff --cached --quiet; then echo "no changes"; exit 0; fi
+            git commit -m "chore: update latest.json (apk) for ${{ github.ref_name }} [skip ci]"
+            git push origin HEAD:main && exit 0
+            echo "push rejected — another workflow moved main, retrying"
+            sleep 15
+          done
+          echo "failed to push latest.json after 3 attempts"; exit 1
