@@ -50,7 +50,7 @@ from logger import YtDlpLogger, get_log_dir, session_header, setup_logging
 log = logging.getLogger("vdl.app")
 
 APP_TITLE = "Video Downloader GUI"
-APP_VERSION = "1.2.0"
+APP_VERSION = "1.3.0"
 GITHUB_REPO = "NarDecH/video-downloader-gui"
 
 # ---------- ตัวเลือกคุณภาพ/ความเร็ว (key เป็น id เพื่อรองรับหลายภาษา) ----------

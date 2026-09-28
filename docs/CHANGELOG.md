@@ -2,7 +2,7 @@
 
 รูปแบบอ้างอิง [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) และใช้ [Semantic Versioning](https://semver.org/)
 
-## [Unreleased]
+## [1.3.0] — 2026-09-28
 
 ### Added (เพิ่มใหม่)
 - **Android: เอนจิน yt-dlp + ffmpeg จริงบนแอป — พร้อมใช้งานกับลิงก์ทั่วไป** (youtubedl-android):
