@@ -75,3 +75,41 @@ jobs:
             > 📄 เอกสารทั้งหมด: https://nardech.github.io/video-downloader-gui/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Write latest.json for Pages (EXE section)
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $sha = (Get-Content dist/checksums.txt).Split(' ')[0]
+          $file = "docs/data/latest.json"
+          $data = if (Test-Path $file) { Get-Content $file -Encoding utf8 | ConvertFrom-Json } else { $null }
+          if (-not $data) {
+            $data = [PSCustomObject]@{ tag = $tag; published_at = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ"); exe = $null; apk = $null }
+          }
+          $data.tag = $tag
+          $data.published_at = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+          $exe = [PSCustomObject]@{
+            name = "VideoDownloaderGUI-$tag.exe"
+            url = "https://github.com/NarDecH/video-downloader-gui/releases/download/$tag/VideoDownloaderGUI-$tag.exe"
+            sha256 = $sha
+            size = (Get-Item "dist/VideoDownloaderGUI-$tag.exe").Length
+            downloads = 0
+          }
+          $obj = $data | ConvertTo-Json -Depth 5 | ConvertFrom-Json
+          if ($obj.PSObject.Properties["exe"]) { $obj.exe = $exe } else { $obj | Add-Member -NotePropertyName exe -NotePropertyValue $exe }
+          New-Item -ItemType Directory -Force -Path docs/data | Out-Null
+          $obj | ConvertTo-Json -Depth 5 | Out-File $file -Encoding utf8
+          Get-Content $file
+
+      - name: Commit latest.json back
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: pwsh
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data/latest.json
+          if (git diff --cached --quiet) { echo "no changes"; exit 0 }
+          git commit -m "chore: update latest.json (exe) for ${{ github.ref_name }} [skip ci]"
+          git pull --rebase origin main
+          git push origin HEAD:main
