@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Video Downloader</string>
+    <string name="hint_url">วางลิงก์วีดีโอที่นี่ (YouTube ฯลฯ)</string>
+    <string name="btn_fetch">ดึงข้อมูล</string>
+    <string name="btn_download">ดาวน์โหลด</string>
+    <string name="title_activity">Video Downloader GUI</string>
+    <string name="legal_note">ใช้เฉพาะกับคอนเทนต์สาธารณะที่มีสิทธิ์ดาวน์โหลดตามกฎหมายและเงื่อนไขของแต่ละเว็บไซต์</string>
+    <string name="fetching">กำลังดึงข้อมูล…</string>
+    <string name="downloading">กำลังดาวน์โหลด…</string>
+    <string name="done">เสร็จสิ้น ✓ บันทึกที่ Downloads/</string>
+    <string name="error_generic">เกิดข้อผิดพลาด: %1$s</string>
+    <string name="notif_channel">การดาวน์โหลด</string>
+</resources>

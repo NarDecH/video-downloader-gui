@@ -26,6 +26,8 @@ except ImportError:
     messagebox.showerror("Video Downloader", "ไม่พบไลบรารี yt-dlp — ติดตั้งด้วยคำสั่ง: pip install yt-dlp")
     sys.exit(1)
 
+import html_media
+
 APP_TITLE = "Video Downloader GUI"
 APP_VERSION = "1.0.0"
 
@@ -313,11 +315,36 @@ class App:
             except yt_dlp.utils.DownloadCancelled:
                 row("ยกเลิก", it.progress, "", "")
             except Exception as exc:  # noqa: BLE001
-                it.error = str(exc)
-                row("ล้มเหลว ✗", it.progress, "", "")
+                row("ลองโหมดสำรอง…", it.progress, "", "")
+                saved = self._fallback(it, row)
+                if not saved:
+                    if self.stop_flag.is_set():
+                        row("ยกเลิก", it.progress, "", "")
+                    else:
+                        it.error = str(exc)
+                        row("ล้มเหลว ✗", it.progress, "", "")
             finally:
                 it.ydl = None
         self.event_q.put(("done",))
+
+    def _fallback(self, it: DownloadItem, row) -> list[str]:
+        """โหมดสำรอง: HTML/media scraper + direct streaming (ใช้เมื่อ yt-dlp ล้มเหลว)"""
+
+        def on_prog(pct: float, speed: str) -> None:
+            it.progress = pct
+            row("สำรอง: กำลังโหลด…", pct, speed, "")
+
+        try:
+            saved = html_media.smart_download(it.url, self.dir_var.get(), self.stop_flag, on_prog)
+        except html_media.DownloadAborted:
+            return []
+        except Exception as exc:  # noqa: BLE001
+            it.error = f"fallback: {exc}"
+            return []
+        if saved:
+            it.title = os.path.basename(saved[0])
+            row("สำเร็จ (สำรอง) ✓", 100, "", "")
+        return saved
 
     # ---------- Event pump ----------
     def _poll_events(self) -> None:
@@ -346,7 +373,7 @@ class App:
                     self.start_btn.config(state="normal")
                     self.cancel_btn.config(state="disabled")
                     self.status_var.set("เสร็จสิ้นทุกรายการ")
-                    ok = sum(1 for i in self.items if i.status == "สำเร็จ ✓")
+                    ok = sum(1 for i in self.items if i.status.startswith("สำเร็จ"))
                     fails = [i for i in self.items if i.status == "ล้มเหลว ✗"]
                     if fails:
                         first = fails[0]

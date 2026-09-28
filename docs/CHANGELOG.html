@@ -48,6 +48,16 @@ footer{text-align:center;color:var(--muted);font-size:.85rem;margin-top:40px}
 <div class="timeline">
 
 <div class="release">
+  <h2>Unreleased <span class="tag" style="background:#fef9c3;color:#854d0e;border-color:#fde047">กำลังพัฒนา</span></h2>
+  <h3 class="added">✨ Added — ฟีเจอร์ใหม่</h3>
+  <ul>
+    <li><b>โหมดสำรอง (fallback download)</b> — เมื่อ yt-dlp ดึงไม่สำเร็จ แอปสลับไปแยกลิงก์สื่อจากหน้า HTML อัตโนมัติ: รองรับไฟล์ <code>.html</code> ในเครื่อง, ลิงก์ไฟล์สื่อตรง (mp4/mp3/ฯลฯ) และการดึงหน้าเว็บหา <code>&lt;video&gt;/&lt;source&gt;/&lt;a&gt;/og:video</code> — พร้อม progress และปุ่มยกเลิก</li>
+    <li>โมดูล <code>html_media.py</code> + หน้าทดสอบ <code>tests/test.html</code> (วิดีโอตัวอย่างสาธารณะ CC) + ชุดทดสอบ <code>tests/run_tests.py</code> — <b>16 เคส ผ่านทั้งหมด</b></li>
+    <li>สถานะใหม่ในตาราง: "ลองโหมดสำรอง…" และ "สำเร็จ (สำรอง) ✓"</li>
+  </ul>
+</div>
+
+<div class="release">
   <h2>เวอร์ชัน 1.0.0 <span class="tag">v1.0.0</span> <span class="date">— 28 กันยายน 2026</span></h2>
   <p style="color:var(--muted);font-size:.92rem;margin-top:6px">🎉 รีลีสแรกอย่างเป็นทางการ</p>
 

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>Media Extraction Test Page (public sample videos)</title>
+<!-- รูปแบบที่ 4: og:video meta -->
+<meta property="og:video" content="https://test-videos.co.uk/vids/sintel/mp4/h264/360/Sintel_360_10s_1MB.mp4">
+</head>
+<body>
+<h1>หน้าทดสอบการแยกลิงก์สื่อ — วิดีโอตัวอย่างสาธารณะ (CC) จาก test-videos.co.uk</h1>
+
+<!-- รูปแบบที่ 1: <video><source> -->
+<video controls width="320">
+  <source src="https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4" type="video/mp4">
+</video>
+
+<!-- รูปแบบที่ 2: <video src> ตรง ๆ -->
+<video src="https://test-videos.co.uk/vids/sintel/mp4/h264/360/Sintel_360_10s_1MB.mp4" controls width="320"></video>
+
+<!-- รูปแบบที่ 3: ลิงก์ดาวน์โหลด <a> -->
+<p><a href="https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_1MB.mp4">ดาวน์โหลด BBB 720p</a></p>
+
+<!-- สื่อประเภทอื่นที่ต้องไม่ถูกดึง: รูปภาพ -->
+<img src="https://test-videos.co.uk/vids/bigbuckbunny/poster/big_buck_bunny_360_10s_1MB.png" alt="poster">
+</body>
+</html>

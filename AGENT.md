@@ -21,7 +21,11 @@
 
 ```
 .
-├── main.py                    # แอป GUI หลัก (tkinter + yt-dlp)
+├── main.py                    # แอป GUI หลัก (tkinter + yt-dlp + โหมดสำรอง)
+├── html_media.py              # โหมดสำรอง: แยกสื่อจาก HTML / ไฟล์ .html ในเครื่อง / ลิงก์ตรง (สตรีมพร้อม progress)
+├── tests/
+│   ├── test.html              # หน้าทดสอบ (วิดีโอตัวอย่างสาธารณะ CC จาก test-videos.co.uk) 4 รูปแบบการฝัง
+│   └── run_tests.py           # ชุดทดสอบอัตโนมัติ (รัน: python tests/run_tests.py)
 ├── VideoDownloaderGUI.spec    # สเปก PyInstaller (onefile, icon, bundle ffmpeg)
 ├── version_info.txt           # Windows version resource ของ EXE
 ├── requirements.txt           # dependencies
@@ -61,8 +65,11 @@ python assets/make_docs_images.py
 python -m PyInstaller --clean --noconfirm VideoDownloaderGUI.spec
 # ผลลัพธ์: dist/VideoDownloaderGUI.exe
 
+# ทดสอบชุดโหมดสำรอง + GUI smoke test
+python tests/run_tests.py
+
 # ตรวจไวยากรณ์
-python -m py_compile main.py
+python -m py_compile main.py html_media.py
 ```
 
 ## 4. ข้อตกลงและแนวปฏิบัติ
@@ -72,7 +79,8 @@ python -m py_compile main.py
 - **การยกเลิก**: ใช้ `stop_flag` (threading.Event) แล้ว raise `yt_dlp.utils.DownloadCancelled` ใน progress hook — ห้ามยิง signal ตรงจากเธรด UI
 - **ffmpeg**: ตรวจจับลำดับ `imageio-ffmpeg` → ข้างๆ EXE → `_MEIPASS` → PATH; แสดง warning ใน UI ถ้าไม่พบ
 - **เวอร์ชัน**: แก้ 3 จุดพร้อมกันเมื่อ bump เวอร์ชัน: `APP_VERSION` ใน `main.py`, `version_info.txt`, `docs/CHANGELOG.*`
-- **ขอบเขตการใช้งาน**: แอปนี้ไว้ดาวน์โหลดคอนเทนต์สาธารณะที่มีสิทธิ์ตามกฎหมาย/เงื่อนไขเว็บไซต์เท่านั้น — ไม่รับ feature ที่มุ่งเจาะจงเว็บผิดกฎหมายหรือละเมิดลิขสิทธิ์
+- **โหมดสำรอง (fallback)**: ถ้า yt-dlp ล้มเหลว `App._fallback` จะเรียก `html_media.smart_download()` — ลำดับ: ไฟล์ .html ในเครื่อง → ลิงก์สื่อตรง → ดึงหน้าเว็บแล้วโหลดไฟล์สื่อแรกที่สำเร็จ; ยกเลิกผ่าน `html_media.DownloadAborted` จาก stop_flag เดียวกัน
+- **ขอบเขตการใช้งาน**: แอปนี้ไว้ดาวน์โหลดคอนเทนต์สาธารณะที่มีสิทธิ์ตามกฎหมาย/เงื่อนไขเว็บไซต์เท่านั้น — ไม่รับ feature ที่มุ่งเจาะจงเว็บผิดกฎหมายหรือละเมิดลิขสิทธิ์ และ**ไม่เขียน scraper เจาะจงเว็บที่เผยแพร่คอนเทนต์ส่วนบุคคลโดยไม่ได้รับความยินยอม (เช่น เว็บคลิปหลุด)** — ทดสอบด้วยวิดีโอตัวอย่างสาธารณะ (test-videos.co.uk) เท่านั้น
 
 ## 5. การ release
 

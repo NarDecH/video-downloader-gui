@@ -79,8 +79,8 @@ footer a{color:var(--accent)}
   <div class="rel-ver" id="rel-ver"><span class="skel">v?.?.?</span></div>
 
   <div class="dl-row">
-    <a class="dl-btn" id="dl-btn" href="https://github.com/NarDecH/video-downloader-gui/releases/latest" title="ดาวน์โหลดเวอร์ชันล่าสุด">
-      <span>⬇️</span>
+    <a class="dl-btn" id="dl-btn" href="https://github.com/NarDecH/video-downloader-gui/releases/latest" title="ดาวน์โหลดเวอร์ชันล่าสุดสำหรับ Windows">
+      <span>🪟</span>
       <span>ดาวน์โหลดสำหรับ Windows<small id="dl-size">VideoDownloaderGUI.exe</small></span>
     </a>
     <div style="color:var(--muted);font-size:.88rem;max-width:300px">
@@ -88,11 +88,22 @@ footer a{color:var(--accent)}
     </div>
   </div>
 
+  <div class="dl-row" id="apk-row" style="display:none;margin-top:14px">
+    <a class="dl-btn" id="apk-btn" style="background:linear-gradient(135deg,#16a34a,#0d9488)" href="#" title="ดาวน์โหลดสำหรับ Android">
+      <span>🤖</span>
+      <span>ดาวน์โหลดสำหรับ Android<small id="apk-name">.apk</small></span>
+    </a>
+    <div style="color:var(--muted);font-size:.88rem;max-width:300px">
+      ✓ Android 7.0+ (API 24)<br>✓ ติดตั้งจากไฟล์ APK โดยตรง<br>✓ รับลิงก์แชร์จากแอปอื่นได้
+    </div>
+  </div>
+
   <div class="meta">
     <div class="m"><b id="m-asset"><span class="skel">—</span></b><span>ชื่อไฟล์</span></div>
     <div class="m"><b id="m-size"><span class="skel">—</span></b><span>ขนาดไฟล์</span></div>
     <div class="m"><b id="m-date"><span class="skel">—</span></b><span>เผยแพร่เมื่อ</span></div>
-    <div class="m"><b id="m-downloads"><span class="skel">—</span></b><span>ยอดดาวน์โหลด</span></div>
+    <div class="m"><b id="m-downloads"><span class="skel">—</span></b><span>ยอดดาวน์โหลด (EXE)</span></div>
+    <div class="m"><b id="m-apk-size"><span class="skel">—</span></b><span>ขนาดไฟล์ Android</span></div>
   </div>
 
   <div class="checksum">
@@ -154,8 +165,18 @@ function fmtDate(iso) {
   } catch { return iso || "—"; }
 }
 function pickAsset(rel) {
-  return (rel.assets || []).find(a => a.name.toLowerCase().endsWith(".exe")) ||
-         (rel.assets || []).find(a => a.name.toLowerCase().endsWith(".zip")) || null;
+  return (rel.assets || []).find(a => a.name.toLowerCase().endsWith(".exe")) || null;
+}
+function pickApk(rel) {
+  return (rel.assets || []).find(a => a.name.toLowerCase().endsWith(".apk")) || null;
+}
+function showApk(apk) {
+  if (!apk) return;
+  const row = document.getElementById("apk-row");
+  row.style.display = "flex";
+  document.getElementById("apk-btn").href = apk.browser_download_url;
+  document.getElementById("apk-name").textContent = apk.name + " • " + fmtSize(apk.size);
+  document.getElementById("m-apk-size").textContent = fmtSize(apk.size);
 }
 function hashFromBody(body) {
   if (!body) return null;
@@ -177,6 +198,7 @@ function render(rel) {
   $("m-date").textContent = fmtDate(rel.published_at);
   const h = hashFromBody(rel.body);
   $("hash").textContent = h || "ดูค่า SHA256 ได้ที่ release notes บน GitHub";
+  showApk(pickApk(rel));
 }
 function showError(msg) {
   const box = $("err");

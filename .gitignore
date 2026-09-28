@@ -16,6 +16,16 @@ env/
 # --- PyInstaller ---
 *.manifest
 
+# --- Android build ---
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/.idea/
+*.apk.idsig
+_tools/
+!android/gradle/wrapper/gradle-wrapper.jar
+
 # --- Downloads (user output) ---
 downloads/
 output/
