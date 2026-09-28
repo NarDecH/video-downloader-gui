@@ -1,11 +1,11 @@
 {
-  "tag": "v1.2.0",
-  "published_at": "2026-09-28T10:47:37Z",
+  "tag": "v1.3.0",
+  "published_at": "2026-09-28T15:10:47Z",
   "exe": {
-    "name": "VideoDownloaderGUI-v1.1.0.exe",
-    "url": "https://github.com/NarDecH/video-downloader-gui/releases/download/v1.1.0/VideoDownloaderGUI-v1.1.0.exe",
-    "sha256": "da87a80df9c44975e79fd1182afa12f221ce489d2c514c681eae5f55f277aeb2",
-    "size": 81891350,
+    "name": "VideoDownloaderGUI-v1.3.0.exe",
+    "url": "https://github.com/NarDecH/video-downloader-gui/releases/download/v1.3.0/VideoDownloaderGUI-v1.3.0.exe",
+    "sha256": "4f6db24198e9c623f71d3f6023e285a4118b19c04335da3ccdec976a762a9e0e",
+    "size": 86849990,
     "downloads": 0
   },
   "apk": {
